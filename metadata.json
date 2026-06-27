@@ -1,0 +1,6 @@
+{
+  "name": "FixIAI",
+  "description": "Premium enterprise AI solutions landing page showcasing Services, Industries, AI Market Opportunity, the Shift towards AI, and Core AI Services.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,7 +1,7 @@
 ﻿'use client';
 
 import React, { useEffect, useRef, useState, createContext, useContext } from 'react';
-import { motion, useScroll, useTransform } from 'motion/react';
+import { motion, AnimatePresence, useScroll, useTransform } from 'motion/react';
 import type { MotionValue } from 'motion/react';
 import Lenis from 'lenis';
 import Link from 'next/link';
@@ -78,10 +78,10 @@ const FlowDiagram = ({ steps, dark = false }: {
   <div className="flex flex-col sm:flex-row items-center gap-3 flex-wrap">
     {steps.map((step, i) => (
       <React.Fragment key={i}>
-        <div className={`flex flex-col items-center gap-1 px-4 py-3 rounded-2xl border text-center min-w-[90px] ${dark ? 'bg-zinc-950 border-zinc-800' : 'bg-zinc-50 border-zinc-200'}`}>
+        <div className={`flex flex-col items-center gap-1 px-4 py-3 rounded-2xl border text-center min-w-[90px] hover:scale-105 hover:-translate-y-0.5 transition-all duration-200 ${dark ? 'bg-zinc-950 border-zinc-800' : 'bg-zinc-50 border-zinc-200'}`}>
           {step.icon && <span className="mb-0.5">{step.icon}</span>}
           <span className={`text-[11px] font-sans font-bold ${dark ? 'text-zinc-200' : 'text-zinc-900'}`}>{step.label}</span>
-          {step.sub && <span className={`text-[10px] font-light leading-tight ${dark ? 'text-zinc-500' : 'text-zinc-500'}`}>{step.sub}</span>}
+          {step.sub && <span className={`text-[10px] font-light leading-tight ${dark ? 'text-zinc-400' : 'text-zinc-500'}`}>{step.sub}</span>}
         </div>
         {i < steps.length - 1 && <ChevronRight className={`w-4 h-4 flex-shrink-0 ${dark ? 'text-blue-500' : 'text-zinc-400'}`} />}
       </React.Fragment>
@@ -236,6 +236,11 @@ const maturityLevels = [
 export default function IndustriesPage() {
   const [activeIndustry, setActiveIndustry] = useState(0);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [litIndustry, setLitIndustry] = useState<number | null>(null);
+  const [dotPosition, setDotPosition] = useState<{ x: number; y: number } | null>(null);
+  const [showCookies, setShowCookies] = useState(false);
+  useEffect(() => { if (typeof window !== 'undefined' && !localStorage.getItem('fixiai-cookies')) setShowCookies(true); }, []);
+  const acceptCookies = (all: boolean) => { localStorage.setItem('fixiai-cookies', all ? 'all' : 'essential'); setShowCookies(false); };
   const industry = industries[activeIndustry];
 
   useEffect(() => {
@@ -256,6 +261,39 @@ export default function IndustriesPage() {
     return () => window.removeEventListener('scroll', h);
   }, []);
 
+  useEffect(() => {
+    let currentIdx = 0;
+    let timeoutId: ReturnType<typeof setTimeout>;
+
+    const animateToNext = () => {
+      const totalIndustries = industries.length;
+      const angle = (currentIdx / totalIndustries) * 2 * Math.PI - Math.PI / 2;
+      const r = 42;
+      const targetX = 50 + r * Math.cos(angle);
+      const targetY = 50 + r * Math.sin(angle);
+
+      setLitIndustry(null);
+      setDotPosition({ x: 50, y: 50 });
+
+      timeoutId = setTimeout(() => {
+        setDotPosition({ x: targetX, y: targetY });
+        timeoutId = setTimeout(() => {
+          setLitIndustry(currentIdx);
+          timeoutId = setTimeout(() => {
+            currentIdx = (currentIdx + 1) % totalIndustries;
+            animateToNext();
+          }, 1200);
+        }, 800);
+      }, 50);
+    };
+
+    const startDelay = setTimeout(animateToNext, 1500);
+    return () => {
+      clearTimeout(startDelay);
+      clearTimeout(timeoutId);
+    };
+  }, []);
+
   return (
     <div className="relative min-h-screen bg-[#0a0a0c] text-[#f4f4f6] font-sans antialiased overflow-x-hidden selection:bg-blue-600/30 selection:text-blue-100">
 
@@ -270,7 +308,7 @@ export default function IndustriesPage() {
           </Link>
           <div className="hidden lg:flex items-center space-x-8">
             {[{ label: 'Home', href: '/' }, { label: 'Services', href: '/services' }, { label: 'Enterprise', href: '/enterprise' }].map((l) => (
-              <Link key={l.href} href={l.href} className="relative text-[13px] font-sans font-medium tracking-tight text-zinc-400 hover:text-zinc-200 transition-colors group">
+              <Link key={l.href} href={l.href} className="relative text-[13px] font-sans font-medium tracking-tight text-zinc-300 hover:text-zinc-100 transition-colors group">
                 {l.label}<span className="absolute -bottom-0.5 left-0 h-[1.5px] bg-blue-400 rounded-full w-0 group-hover:w-full transition-all duration-300" />
               </Link>
             ))}
@@ -297,7 +335,7 @@ export default function IndustriesPage() {
               AI built for your<br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-300 to-white">industry's exact context</span>
             </motion.h1>
             <motion.p initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.18 }}
-              className="text-sm text-zinc-400 font-light leading-relaxed max-w-lg">
+              className="text-sm text-zinc-300 font-light leading-relaxed max-w-lg">
               Sector-native AI systems engineered around your regulatory requirements, data architecture, workflows, and operational constraints. Not generic AI — purpose-built for your vertical.
             </motion.p>
             <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.26 }}
@@ -315,31 +353,96 @@ export default function IndustriesPage() {
           <motion.div initial={{ opacity: 0, scale: 0.94 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8, delay: 0.3 }}
             className="relative hidden lg:flex items-center justify-center">
             <div className="relative w-full max-w-md aspect-square">
-              <div className="absolute inset-0 rounded-full border border-zinc-900/60 bg-[radial-gradient(circle,_rgba(30,30,60,0.3)_0%,_transparent_70%)]" />
-              <div className="absolute inset-8 rounded-full border border-zinc-800/40" />
-              <div className="absolute inset-16 rounded-full border border-zinc-800/30 bg-zinc-950/50" />
+              {/* Decorative rings */}
+              <div className="absolute inset-0 rounded-full border border-zinc-800/40 bg-[radial-gradient(circle,_rgba(30,30,60,0.2)_0%,_transparent_70%)]" />
+              <div className="absolute inset-8 rounded-full border border-zinc-800/30" />
+              <div className="absolute inset-16 rounded-full border border-zinc-700/20 bg-zinc-950/30" />
+
+              {/* SVG layer for lines + animated dot */}
+              <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+                {/* White connecting lines from center to each industry box */}
+                {industries.map((_, i) => {
+                  const angle = (i / industries.length) * 2 * Math.PI - Math.PI / 2;
+                  const r = 42;
+                  const x = 50 + r * Math.cos(angle);
+                  const y = 50 + r * Math.sin(angle);
+                  return (
+                    <line key={i}
+                      x1="50" y1="50" x2={x} y2={y}
+                      stroke="white" strokeWidth="0.4" strokeOpacity={litIndustry === i ? 0.8 : 0.15}
+                      style={{ transition: 'stroke-opacity 0.4s ease' }}
+                    />
+                  );
+                })}
+
+                {/* Animated traveling dot */}
+                {dotPosition && (
+                  <circle
+                    cx={dotPosition.x}
+                    cy={dotPosition.y}
+                    r="1.5"
+                    fill="white"
+                    style={{ transition: 'cx 0.8s ease, cy 0.8s ease' }}
+                  />
+                )}
+              </svg>
+
+              {/* Center hub */}
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-16 h-16 rounded-2xl bg-zinc-950 border border-zinc-800 flex items-center justify-center shadow-xl">
+                <div className="w-16 h-16 rounded-2xl bg-zinc-900 border border-zinc-700 flex items-center justify-center shadow-xl shadow-blue-900/20">
                   <Brain className="w-7 h-7 text-blue-400" />
                 </div>
               </div>
+
+              {/* Industry boxes - all dark by default, light up when lit */}
               {industries.map((ind, i) => {
                 const angle = (i / industries.length) * 2 * Math.PI - Math.PI / 2;
                 const r = 42;
                 const x = 50 + r * Math.cos(angle);
                 const y = 50 + r * Math.sin(angle);
+                const isLit = litIndustry === i;
+                const isActive = activeIndustry === i;
                 return (
                   <button key={ind.key} onClick={() => setActiveIndustry(i)}
                     style={{ left: `${x}%`, top: `${y}%`, transform: 'translate(-50%, -50%)' }}
-                    className={`absolute w-14 h-14 rounded-2xl border flex flex-col items-center justify-center gap-0.5 transition-all duration-300 hover:scale-110 ${activeIndustry === i ? 'bg-white border-white text-zinc-950 shadow-[0_0_24px_rgba(255,255,255,0.2)]' : 'bg-zinc-950 border-zinc-800 text-zinc-400 hover:border-zinc-700'}`}>
-                    <span className={`[&>svg]:w-4 [&>svg]:h-4 ${activeIndustry === i ? 'text-zinc-950' : ind.accentClass}`}>{ind.icon}</span>
-                    <span className="text-[8px] font-sans font-bold">{ind.label.split(' ')[0]}</span>
+                    className={`absolute w-14 h-14 rounded-2xl border flex flex-col items-center justify-center gap-0.5 transition-all duration-300 hover:scale-110 ${
+                      isLit
+                        ? 'bg-white border-white shadow-[0_0_28px_rgba(255,255,255,0.35)] scale-110'
+                        : isActive
+                        ? 'bg-zinc-800 border-zinc-600'
+                        : 'bg-zinc-950 border-zinc-800 hover:border-zinc-600'
+                    }`}>
+                    <span className={`[&>svg]:w-4 [&>svg]:h-4 ${isLit ? 'text-zinc-950' : ind.accentClass}`}>{ind.icon}</span>
+                    <span className={`text-[8px] font-sans font-bold ${isLit ? 'text-zinc-950' : 'text-zinc-400'}`}>{ind.label.split(' ')[0]}</span>
                   </button>
                 );
               })}
             </div>
           </motion.div>
         </div>
+
+        {/* Cookie banner — absolute bottom, scrolls away with hero */}
+        <AnimatePresence>
+          {showCookies && (
+            <motion.div initial={{ y: 24, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 24, opacity: 0 }}
+              transition={{ duration: 0.45, delay: 2, ease: [0.32, 0.72, 0, 1] }}
+              className="absolute bottom-0 left-0 right-0 z-30">
+              <div className="bg-[#111113]/95 backdrop-blur-xl border-t border-zinc-800/60">
+                <div className="max-w-[1440px] mx-auto px-8 sm:px-12 py-4 flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between">
+                  <div className="space-y-0.5 max-w-xl">
+                    <p className="text-sm font-sans font-semibold text-white">We use cookies</p>
+                    <p className="text-xs text-zinc-400 font-light leading-relaxed">We use cookies to help this site function and to understand how you use it, so we can improve your experience.</p>
+                  </div>
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <button onClick={() => acceptCookies(false)} className="px-4 py-2 rounded-full text-[11px] font-sans font-semibold bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white transition-all duration-200">Manage Cookies</button>
+                    <button onClick={() => acceptCookies(false)} className="px-4 py-2 rounded-full text-[11px] font-sans font-semibold bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white transition-all duration-200">Reject non-essential</button>
+                    <button onClick={() => acceptCookies(true)} className="px-4 py-2 rounded-full text-[11px] font-sans font-semibold bg-white text-zinc-950 hover:bg-zinc-100 transition-all duration-200">Accept all</button>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.section>
 
       {/* ═══ INDUSTRY DETAIL ════════════════════════════════════════════════════ */}
@@ -369,7 +472,7 @@ export default function IndustriesPage() {
               </div>
               <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {industry.outcomes.map((o, i) => (
-                  <div key={i} className="p-5 rounded-2xl bg-zinc-50 border border-zinc-200">
+                  <div key={i} className="group p-5 rounded-2xl bg-zinc-50 border border-zinc-200 hover:border-indigo-200 hover:-translate-y-1 hover:shadow-lg hover:bg-white transition-all duration-300 cursor-pointer">
                     <div className={`text-2xl font-display font-bold tracking-tight ${industry.accentClass} mb-1`}>{o.metric}</div>
                     <p className="text-[11px] text-zinc-500 font-light leading-relaxed">{o.description}</p>
                   </div>
@@ -384,7 +487,7 @@ export default function IndustriesPage() {
                 </h3>
                 <div className="space-y-3">
                   {industry.challenges.map((c, i) => (
-                    <div key={i} className="p-4 rounded-2xl bg-zinc-50 border border-zinc-200 space-y-1.5">
+                    <div key={i} className="group p-4 rounded-2xl bg-zinc-50 border border-zinc-200 space-y-1.5 hover:border-indigo-200 hover:-translate-y-1 hover:shadow-md hover:bg-white transition-all duration-300 cursor-pointer">
                       <h4 className="text-xs font-sans font-bold text-zinc-950">{c.title}</h4>
                       <p className="text-[11px] text-zinc-500 font-light leading-relaxed">{c.desc}</p>
                     </div>
@@ -398,7 +501,7 @@ export default function IndustriesPage() {
                 </h3>
                 <div className="space-y-3">
                   {industry.solutions.map((s, i) => (
-                    <div key={i} className="p-4 rounded-2xl bg-zinc-50 border border-zinc-200 space-y-1.5">
+                    <div key={i} className="group p-4 rounded-2xl bg-zinc-50 border border-zinc-200 space-y-1.5 hover:border-indigo-200 hover:-translate-y-1 hover:shadow-md hover:bg-white transition-all duration-300 cursor-pointer">
                       <h4 className="text-xs font-sans font-bold text-blue-600">{s.title}</h4>
                       <p className="text-[11px] text-zinc-500 font-light leading-relaxed">{s.desc}</p>
                     </div>
@@ -417,18 +520,18 @@ export default function IndustriesPage() {
             <h2 className="text-3xl sm:text-4xl font-display font-semibold text-white tracking-tight">
               <WordReveal text="Where is your sector on the AI maturity curve?" />
             </h2>
-            <p className="text-sm text-zinc-400 mt-4 font-light leading-relaxed">
+            <p className="text-sm text-zinc-300 mt-4 font-light leading-relaxed">
               Most enterprises land between Pilot and Integration. Fixl AI's deployment model is designed to advance organisations 2–3 levels within 12 months.
             </p>
           </div>
           {/* Maturity ladder */}
           <div className="space-y-3">
             {maturityLevels.map((m, i) => (
-              <div key={i} className={`flex items-center gap-4 py-4 px-5 rounded-2xl border ${m.color} transition-all duration-200`}
+              <div key={i} className={`flex items-center gap-4 py-4 px-5 rounded-2xl border ${m.color} transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_4px_20px_rgba(99,102,241,0.12)] cursor-pointer`}
                 style={{ paddingLeft: `${1.5 + i * 1.1}rem` }}>
                 <span className={`text-[11px] font-sans font-bold tabular-nums ${m.textColor} w-7 flex-shrink-0`}>{m.level}</span>
                 <span className={`text-sm font-sans font-bold ${m.textColor} flex-shrink-0 w-28`}>{m.label}</span>
-                <span className="text-xs text-zinc-400 font-light flex-1 min-w-0">{m.desc}</span>
+                <span className="text-xs text-zinc-300 font-light flex-1 min-w-0">{m.desc}</span>
                 <div className="flex items-center gap-2 flex-shrink-0">
                   {i <= 1 && <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-zinc-800 text-zinc-400 border border-zinc-700">Most orgs today</span>}
                   {i >= 3 && <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-blue-950/50 text-blue-400 border border-blue-900/50">Fixl AI target</span>}
@@ -446,7 +549,7 @@ export default function IndustriesPage() {
               { label: 'Expand', sub: 'Cross-BU rollout', icon: <Network className="w-3.5 h-3.5 text-indigo-400" /> },
               { label: 'Scale', sub: 'AI-first ops', icon: <TrendingUp className="w-3.5 h-3.5 text-blue-400" /> },
             ]} />
-            <p className="text-[10px] text-zinc-600 font-light mt-3">Average time from Assessment to Integration: 12–16 weeks. Assessment to Scale: 9–14 months depending on org complexity.</p>
+            <p className="text-[10px] text-zinc-400 font-light mt-3">Average time from Assessment to Integration: 12–16 weeks. Assessment to Scale: 9–14 months depending on org complexity.</p>
           </div>
         </div>
       </SectionReveal>
@@ -463,7 +566,7 @@ export default function IndustriesPage() {
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            <div className="p-6 rounded-3xl bg-white border border-zinc-200 shadow-sm space-y-4">
+            <div className="group p-6 rounded-3xl bg-white border border-zinc-200 shadow-sm space-y-4 hover:border-indigo-200 hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer">
               <div className="w-10 h-10 rounded-2xl bg-zinc-50 border border-zinc-200 flex items-center justify-center">
                 <Brain className="w-5 h-5 text-blue-600" />
               </div>
@@ -472,7 +575,7 @@ export default function IndustriesPage() {
                 {['GPT-4o', 'Claude Sonnet 4', 'Gemini 2 Flash', 'Llama 3.3 70B', 'DeepSeek R1', 'Mistral Large', 'Command R+', 'Phi-4'].map(t => <TechBadge key={t} label={t} />)}
               </div>
             </div>
-            <div className="p-6 rounded-3xl bg-white border border-zinc-200 shadow-sm space-y-4">
+            <div className="group p-6 rounded-3xl bg-white border border-zinc-200 shadow-sm space-y-4 hover:border-indigo-200 hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer">
               <div className="w-10 h-10 rounded-2xl bg-zinc-50 border border-zinc-200 flex items-center justify-center">
                 <Search className="w-5 h-5 text-blue-600" />
               </div>
@@ -481,7 +584,7 @@ export default function IndustriesPage() {
                 {['text-embedding-3-large', 'BGE-M3', 'Cohere Embed v3', 'CLIP', 'SPLADE++', 'BM25', 'HNSW ANN', 'Faiss'].map(t => <TechBadge key={t} label={t} />)}
               </div>
             </div>
-            <div className="p-6 rounded-3xl bg-white border border-zinc-200 shadow-sm space-y-4">
+            <div className="group p-6 rounded-3xl bg-white border border-zinc-200 shadow-sm space-y-4 hover:border-indigo-200 hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer">
               <div className="w-10 h-10 rounded-2xl bg-zinc-50 border border-zinc-200 flex items-center justify-center">
                 <Mic className="w-5 h-5 text-blue-600" />
               </div>
@@ -490,7 +593,7 @@ export default function IndustriesPage() {
                 {['Deepgram Nova-3', 'Whisper v3', 'ElevenLabs Turbo', 'Cartesia Sonic', 'AssemblyAI', 'Azure Speech', 'PlayHT v3'].map(t => <TechBadge key={t} label={t} />)}
               </div>
             </div>
-            <div className="p-6 rounded-3xl bg-white border border-zinc-200 shadow-sm space-y-4">
+            <div className="group p-6 rounded-3xl bg-white border border-zinc-200 shadow-sm space-y-4 hover:border-indigo-200 hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer">
               <div className="w-10 h-10 rounded-2xl bg-zinc-50 border border-zinc-200 flex items-center justify-center">
                 <Eye className="w-5 h-5 text-indigo-600" />
               </div>
@@ -499,7 +602,7 @@ export default function IndustriesPage() {
                 {['GPT-4o Vision', 'SAM 2.1', 'YOLOv10', 'PaddleOCR v4', 'Surya OCR', 'Twelve Labs', 'DINO v2', 'Florence 2'].map(t => <TechBadge key={t} label={t} />)}
               </div>
             </div>
-            <div className="p-6 rounded-3xl bg-white border border-zinc-200 shadow-sm space-y-4">
+            <div className="group p-6 rounded-3xl bg-white border border-zinc-200 shadow-sm space-y-4 hover:border-indigo-200 hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer">
               <div className="w-10 h-10 rounded-2xl bg-zinc-50 border border-zinc-200 flex items-center justify-center">
                 <Workflow className="w-5 h-5 text-purple-600" />
               </div>
@@ -508,7 +611,7 @@ export default function IndustriesPage() {
                 {['LangGraph', 'CrewAI', 'AutoGen v0.4', 'LlamaIndex', 'Haystack v2', 'Temporal.io', 'Prefect 3'].map(t => <TechBadge key={t} label={t} />)}
               </div>
             </div>
-            <div className="p-6 rounded-3xl bg-white border border-zinc-200 shadow-sm space-y-4">
+            <div className="group p-6 rounded-3xl bg-white border border-zinc-200 shadow-sm space-y-4 hover:border-indigo-200 hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer">
               <div className="w-10 h-10 rounded-2xl bg-zinc-50 border border-zinc-200 flex items-center justify-center">
                 <Server className="w-5 h-5 text-blue-600" />
               </div>
@@ -528,7 +631,7 @@ export default function IndustriesPage() {
             <h2 className="text-3xl sm:text-4xl font-display font-semibold text-white tracking-tight">
               <WordReveal text="Enterprise-grade infrastructure, privately deployed." />
             </h2>
-            <p className="text-sm text-zinc-400 mt-4 font-light leading-relaxed">
+            <p className="text-sm text-zinc-300 mt-4 font-light leading-relaxed">
               All AI systems run on your cloud account or on-premise hardware. No shared infrastructure. No cross-tenant data paths. Your environment, your control.
             </p>
           </div>
@@ -539,12 +642,12 @@ export default function IndustriesPage() {
               { icon: <Database className="w-5 h-5 text-blue-400" />, title: 'Vector Stores', items: ['Qdrant (Cloud + OSS)', 'Pinecone Enterprise', 'pgvector (PostgreSQL)', 'Weaviate', 'Chroma', 'Redis VSS'] },
               { icon: <Radio className="w-5 h-5 text-violet-400" />, title: 'Pipelines', items: ['Kafka (event streaming)', 'Apache Airflow 2', 'Prefect 3 workflows', 'dbt transformations', 'Spark (PySpark)', 'Snowflake Streams'] },
             ].map((col, i) => (
-              <div key={i} className="p-5 rounded-2xl bg-[#0c0c0e] border border-zinc-900 space-y-4">
+              <div key={i} className="group p-5 rounded-2xl bg-[#0c0c0e] border border-zinc-900 space-y-4 hover:border-violet-800/40 hover:-translate-y-1.5 hover:shadow-[0_12px_40px_rgba(139,92,246,0.15)] hover:bg-zinc-900 transition-all duration-300 cursor-pointer">
                 <div className="w-9 h-9 rounded-xl bg-zinc-950 border border-zinc-800 flex items-center justify-center">{col.icon}</div>
                 <h4 className="text-xs font-sans font-bold text-white">{col.title}</h4>
                 <ul className="space-y-1.5">
                   {col.items.map(item => (
-                    <li key={item} className="flex items-center gap-2 text-[11px] text-zinc-500 font-light">
+                    <li key={item} className="flex items-center gap-2 text-[11px] text-zinc-300 font-light">
                       <span className="w-1 h-1 rounded-full bg-zinc-700 flex-shrink-0" />{item}
                     </li>
                   ))}
@@ -562,10 +665,10 @@ export default function IndustriesPage() {
                 { label: 'Data Layer', items: ['Vector DBs', 'Relational DBs', 'Object Storage', 'Event Streams'], color: 'border-indigo-900/50 bg-indigo-950/20' },
                 { label: 'Infrastructure', items: ['Kubernetes', 'Private VPC', 'mTLS + RBAC', 'Secrets Vault'], color: 'border-violet-900/50 bg-violet-950/20' },
               ].map((tier, i) => (
-                <div key={i} className={`p-3.5 rounded-xl border ${tier.color} flex flex-wrap items-center gap-3`}>
-                  <span className="text-[10px] font-sans font-bold text-zinc-400 w-32 flex-shrink-0">{tier.label}</span>
+                <div key={i} className={`p-3.5 rounded-xl border ${tier.color} flex flex-wrap items-center gap-3 hover:border-indigo-800/40 hover:shadow-[0_4px_16px_rgba(99,102,241,0.1)] transition-all duration-300 cursor-pointer`}>
+                  <span className="text-[10px] font-sans font-bold text-zinc-300 w-32 flex-shrink-0">{tier.label}</span>
                   <div className="flex flex-wrap gap-2">
-                    {tier.items.map(item => <span key={item} className="px-2.5 py-1 rounded-lg text-[10px] font-sans font-semibold bg-zinc-950/80 text-zinc-400 border border-zinc-800">{item}</span>)}
+                    {tier.items.map(item => <span key={item} className="px-2.5 py-1 rounded-lg text-[10px] font-sans font-semibold bg-zinc-950/80 text-zinc-300 border border-zinc-800">{item}</span>)}
                   </div>
                 </div>
               ))}
@@ -594,7 +697,7 @@ export default function IndustriesPage() {
               { icon: <FileText className="w-4 h-4 text-indigo-600" />, label: 'Productivity', items: ['Microsoft 365', 'Google Workspace', 'Notion', 'Confluence'] },
               { icon: <BarChart3 className="w-4 h-4 text-indigo-600" />, label: 'Data', items: ['Snowflake', 'Databricks', 'BigQuery', 'Redshift'] },
             ].map((cat, i) => (
-              <div key={i} className="p-4 rounded-2xl bg-zinc-50 border border-zinc-200 space-y-3">
+              <div key={i} className="group p-4 rounded-2xl bg-zinc-50 border border-zinc-200 space-y-3 hover:border-indigo-200 hover:shadow-md hover:-translate-y-1 hover:bg-white transition-all duration-300 cursor-pointer">
                 <div className="flex items-center gap-2">
                   <div className="w-7 h-7 rounded-lg bg-white border border-zinc-200 flex items-center justify-center shadow-sm">{cat.icon}</div>
                   <span className="text-[10px] font-sans font-bold text-zinc-500 uppercase tracking-widest">{cat.label}</span>
@@ -630,10 +733,11 @@ export default function IndustriesPage() {
               { icon: <Settings className="w-5 h-5 text-purple-600" />, title: 'Infrastructure', desc: 'Prometheus + Grafana for GPU utilisation, request throughput, p99 latency, and queue depth across all services.' },
               { icon: <Shield className="w-5 h-5 text-violet-600" />, title: 'Security Audit', desc: 'All model inputs/outputs logged to immutable audit trail with PII redaction, retention policies, and SIEM integration.' },
             ].map((item, i) => (
-              <div key={i} className="group p-5 rounded-2xl bg-zinc-50 border border-zinc-200 hover:border-zinc-300 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 space-y-3">
-                <div className="w-9 h-9 rounded-xl bg-white border border-zinc-200 flex items-center justify-center group-hover:scale-110 transition-transform shadow-sm">{item.icon}</div>
-                <h4 className="text-xs font-sans font-bold text-zinc-950">{item.title}</h4>
-                <p className="text-[11px] text-zinc-500 font-light leading-relaxed">{item.desc}</p>
+              <div key={i} className="group relative overflow-hidden p-5 rounded-2xl bg-zinc-50 border border-zinc-200 hover:border-blue-200 hover:shadow-xl hover:-translate-y-1.5 hover:bg-white transition-all duration-300 space-y-3 cursor-pointer">
+                <div className="absolute inset-0 bg-gradient-to-br from-transparent to-blue-50/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                <div className="relative z-10 w-9 h-9 rounded-xl bg-white border border-zinc-200 flex items-center justify-center group-hover:scale-110 transition-transform shadow-sm">{item.icon}</div>
+                <h4 className="relative z-10 text-xs font-sans font-bold text-zinc-950">{item.title}</h4>
+                <p className="relative z-10 text-[11px] text-zinc-500 font-light leading-relaxed">{item.desc}</p>
               </div>
             ))}
           </div>
@@ -652,7 +756,7 @@ export default function IndustriesPage() {
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-semibold text-white tracking-tight leading-tight">
                 <WordReveal text="Ready for a sector-specific AI deployment?" />
               </h2>
-              <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed font-light max-w-lg mx-auto">
+              <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-light max-w-lg mx-auto">
                 Book a 30-minute discovery call. We'll scope an AI deployment plan tailored to your industry's regulatory environment, data architecture, and operational constraints.
               </p>
             </div>
@@ -665,7 +769,7 @@ export default function IndustriesPage() {
               </Link>
             </div>
           </div>
-          <footer className="pt-10 border-t border-[#1a2d4a]/40 grid grid-cols-2 md:grid-cols-6 gap-8 text-left text-xs text-zinc-400">
+          <footer className="pt-10 border-t border-[#1a2d4a]/40 grid grid-cols-2 md:grid-cols-6 gap-8 text-left text-xs text-zinc-300">
             <div className="col-span-2 space-y-4">
               <div className="flex items-center space-x-2">
                 <div className="w-6 h-6 rounded bg-[#0d1e38] border border-[#1a2d4a]/60 flex items-center justify-center">
@@ -673,7 +777,7 @@ export default function IndustriesPage() {
                 </div>
                 <span className="font-display font-semibold text-white text-sm tracking-tight">Fixl AI</span>
               </div>
-              <p className="text-zinc-500 leading-relaxed font-light text-[11px]">Sector-native AI systems engineered for your vertical — deployed on your infrastructure with full compliance.</p>
+              <p className="text-zinc-400 leading-relaxed font-light text-[11px]">Sector-native AI systems engineered for your vertical — deployed on your infrastructure with full compliance.</p>
               <div className="text-zinc-600 font-sans text-[10px] uppercase tracking-wider">&copy; {new Date().getFullYear()} Fixl AI. All rights reserved.</div>
             </div>
             {[
@@ -684,7 +788,7 @@ export default function IndustriesPage() {
             ].map((col, i) => (
               <div key={i} className="space-y-3">
                 <h4 className="font-sans text-[10px] uppercase font-bold text-white tracking-widest">{col.title}</h4>
-                <ul className="space-y-2 font-light text-zinc-500 text-[11px]">
+                <ul className="space-y-2 font-light text-zinc-400 text-[11px]">
                   {col.links.map((l) => <li key={l.l}><Link href={l.h} className="hover:text-blue-400 transition-colors">{l.l}</Link></li>)}
                 </ul>
               </div>
@@ -696,3 +800,4 @@ export default function IndustriesPage() {
     </div>
   );
 }
+

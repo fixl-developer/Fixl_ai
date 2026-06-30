@@ -1,7 +1,7 @@
 ﻿'use client';
 
-import React, { useEffect, useRef, createContext, useContext } from 'react';
-import { motion, useScroll, useTransform } from 'motion/react';
+import React, { useEffect, useRef, useState, createContext, useContext } from 'react';
+import { motion, AnimatePresence, useScroll, useTransform } from 'motion/react';
 import type { MotionValue } from 'motion/react';
 import Lenis from 'lenis';
 import Link from 'next/link';
@@ -66,18 +66,23 @@ const SectionReveal = ({ children, id, className = '' }: {
 const CapCard = ({ icon, title, desc, dark = false }: {
   icon: React.ReactNode; title: string; desc: string; dark?: boolean;
 }) => (
-  <div className={`group p-5 rounded-2xl border transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md ${dark ? 'bg-[#0c0c0e] border-zinc-900 hover:border-zinc-800' : 'bg-white border-zinc-200 hover:border-zinc-300'}`}>
-    <div className={`w-8 h-8 rounded-xl flex items-center justify-center mb-3 border group-hover:scale-110 transition-transform ${dark ? 'bg-zinc-950 border-zinc-800' : 'bg-zinc-50 border-zinc-200'}`}>{icon}</div>
-    <h4 className={`text-xs font-sans font-bold mb-1 ${dark ? 'text-white' : 'text-zinc-900'}`}>{title}</h4>
-    <p className={`text-[11px] leading-relaxed font-light ${dark ? 'text-zinc-500' : 'text-zinc-500'}`}>{desc}</p>
+  <div className={`group p-5 rounded-2xl border transition-all duration-300 cursor-pointer overflow-hidden relative ${
+    dark
+      ? 'bg-zinc-950 border-zinc-800 hover:border-indigo-800/60 hover:-translate-y-1.5 hover:shadow-[0_12px_40px_rgba(99,102,241,0.15)]'
+      : 'bg-white border-zinc-200 hover:border-zinc-300 hover:-translate-y-1.5 hover:shadow-xl'
+  }`}>
+    {dark && <div className="absolute inset-0 bg-gradient-to-br from-indigo-950/0 to-indigo-950/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />}
+    <div className={`relative w-8 h-8 rounded-xl flex items-center justify-center mb-3 border group-hover:scale-110 transition-all duration-300 ${dark ? 'bg-zinc-900 border-zinc-800 group-hover:border-indigo-700/50' : 'bg-zinc-50 border-zinc-200 group-hover:bg-blue-50 group-hover:border-blue-200'}`}>{icon}</div>
+    <h4 className={`relative text-xs font-sans font-bold mb-1.5 transition-colors duration-300 ${dark ? 'text-white group-hover:text-indigo-300' : 'text-zinc-900 group-hover:text-blue-700'}`}>{title}</h4>
+    <p className={`relative text-[11px] leading-relaxed font-light ${dark ? 'text-zinc-400' : 'text-zinc-500'}`}>{desc}</p>
   </div>
 );
 
 const DarkTag = ({ label }: { label: string }) => (
-  <span className="px-2.5 py-1 rounded-full text-[10px] font-sans font-semibold bg-zinc-900 text-zinc-400 border border-zinc-800">{label}</span>
+  <span className="px-2.5 py-1 rounded-full text-[10px] font-sans font-semibold bg-zinc-900 text-zinc-400 border border-zinc-800 cursor-default hover:bg-zinc-800 hover:text-zinc-300 hover:border-zinc-700 transition-all duration-200 inline-block">{label}</span>
 );
 const Tag = ({ label }: { label: string }) => (
-  <span className="px-2.5 py-1 rounded-full text-[10px] font-sans font-semibold bg-zinc-100 text-zinc-600 border border-zinc-200">{label}</span>
+  <span className="px-2.5 py-1 rounded-full text-[10px] font-sans font-semibold bg-zinc-100 text-zinc-600 border border-zinc-200 cursor-default hover:bg-zinc-200 hover:text-zinc-800 hover:border-zinc-300 transition-all duration-200 inline-block">{label}</span>
 );
 
 // ─── CSS Flow Diagram ─────────────────────────────────────────────────────────
@@ -103,7 +108,10 @@ const FlowDiagram = ({ steps, dark = false }: {
 // ─── ServicesPage ─────────────────────────────────────────────────────────────
 
 export default function ServicesPage() {
-  const [isScrolled, setIsScrolled] = React.useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [showCookies, setShowCookies] = useState(false);
+  useEffect(() => { if (typeof window !== 'undefined' && !localStorage.getItem('fixiai-cookies')) setShowCookies(true); }, []);
+  const acceptCookies = (all: boolean) => { localStorage.setItem('fixiai-cookies', all ? 'all' : 'essential'); setShowCookies(false); };
 
   useEffect(() => {
     const lenis = new Lenis({
@@ -149,38 +157,89 @@ export default function ServicesPage() {
       </nav>
 
       {/* ═══ HERO ═══════════════════════════════════════════════════════════════ */}
-      <motion.section className="relative min-h-screen flex items-center justify-center bg-[#0a0a0c] overflow-hidden border-b border-zinc-900 pt-24"
-        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }}>
-        <div className="absolute inset-0 bg-grid-pattern opacity-8 pointer-events-none" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-blue-900/10 blur-[140px] pointer-events-none" />
-        <div className="max-w-[1440px] mx-auto px-8 sm:px-12 text-center space-y-8 relative z-10 py-20">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-900/80 border border-zinc-800 text-[11px] font-sans text-blue-400 font-semibold">
-            <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />Full-Spectrum Enterprise AI Engineering
-          </motion.div>
-          <motion.h1 initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1 }}
-            className="text-4xl sm:text-6xl lg:text-7xl font-display font-semibold text-white tracking-tight leading-tight max-w-5xl mx-auto">
-            Every AI capability your<br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-300 to-white">enterprise demands</span>
-          </motion.h1>
-          <motion.p initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.18 }}
-            className="text-sm sm:text-base text-zinc-400 font-light leading-relaxed max-w-2xl mx-auto">
-            Eight specialised AI engineering practices. One integrated platform. Deployed on your infrastructure with full enterprise security from day one.
-          </motion.p>
-          <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.26 }}
-            className="flex flex-wrap items-center justify-center gap-3 pt-4">
-            {[
-              { label: 'LLM Solutions', href: '#llm' }, { label: 'Agentic AI', href: '#agentic' },
-              { label: 'RAG Systems', href: '#rag' }, { label: 'AI Automation', href: '#automation' },
-              { label: 'Voice AI', href: '#voice' }, { label: 'Multimodal AI', href: '#multimodal' },
-              { label: 'Custom AI Dev', href: '#custom' }, { label: 'AI Consulting', href: '#consulting' },
-            ].map((s) => (
-              <a key={s.href} href={s.href}
-                className="px-4 py-2 rounded-full text-[11px] font-sans font-semibold bg-zinc-900/80 border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700 hover:bg-zinc-900 transition-all duration-200">
-                {s.label}
-              </a>
-            ))}
-          </motion.div>
-        </div>
+      <motion.section className="relative h-screen overflow-hidden border-b border-zinc-900"
+        style={{ backgroundImage: 'url(/hero.png)', backgroundSize: 'cover', backgroundPosition: 'center' }}
+        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
+        <div className="absolute inset-0 bg-[#0a0a0c]/55" />
+
+        {/* TOP LEFT — plain text, no box */}
+        <motion.div initial={{ opacity: 0, x: -24 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.25 }}
+          className="absolute top-28 left-8 sm:left-12 space-y-3 max-w-xs">
+          <p className="text-[11px] font-sans font-semibold tracking-widest uppercase text-zinc-400">Services</p>
+          <h2 className="text-2xl sm:text-3xl font-sans font-semibold text-white leading-snug tracking-tight">
+            Full-spectrum<br />AI engineering
+          </h2>
+          <p className="text-sm text-zinc-300 font-light leading-relaxed">
+            Eight specialised practices.<br />Enterprise-grade. Production-ready.
+          </p>
+        </motion.div>
+
+        {/* TOP RIGHT — plain text stats, no box */}
+        <motion.div initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.35 }}
+          className="absolute top-28 right-8 sm:right-12 flex flex-col gap-5 items-end">
+          {[
+            { val: '3–6 weeks', label: 'to production' },
+            { val: '99.99%', label: 'uptime SLA' },
+            { val: 'ROI', label: 'or you don\'t pay' },
+          ].map((stat, i) => (
+            <div key={i} className="text-right">
+              <div className="text-xl font-sans font-semibold text-white">{stat.val}</div>
+              <div className="text-xs text-zinc-400 font-light mt-0.5">{stat.label}</div>
+            </div>
+          ))}
+        </motion.div>
+
+        {/* BOTTOM LEFT */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.45 }}
+          className="absolute bottom-16 left-8 sm:left-12 flex items-center gap-4">
+          <a href="#services-cta" className="px-6 py-3 rounded-full font-sans text-sm font-semibold bg-white text-zinc-950 hover:bg-zinc-100 hover:shadow-[0_8px_32px_rgba(255,255,255,0.2)] hover:scale-[1.04] transition-all duration-200 shadow-lg flex items-center gap-2">
+            Book a Demo <ArrowRight className="w-4 h-4" />
+          </a>
+          <Link href="/enterprise" className="text-sm font-sans font-medium text-zinc-400 hover:text-white transition-colors duration-200">
+            Enterprise →
+          </Link>
+        </motion.div>
+
+        {/* BOTTOM RIGHT — plain text links, no chip boxes */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.55 }}
+          className="absolute bottom-16 right-8 sm:right-12 flex flex-col gap-2 items-end">
+          {[
+            { label: 'LLM Solutions', href: '#llm' },
+            { label: 'Agentic AI', href: '#agentic' },
+            { label: 'RAG Systems', href: '#rag' },
+            { label: 'AI Automation', href: '#automation' },
+            { label: 'Voice AI', href: '#voice' },
+            { label: 'Multimodal AI', href: '#multimodal' },
+          ].map((s) => (
+            <a key={s.href} href={s.href}
+              className="text-[13px] font-sans font-medium text-zinc-400 hover:text-white transition-colors duration-200">
+              {s.label}
+            </a>
+          ))}
+        </motion.div>
+
+        {/* Cookie banner — absolute bottom, scrolls away with hero */}
+        <AnimatePresence>
+          {showCookies && (
+            <motion.div initial={{ y: 24, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 24, opacity: 0 }}
+              transition={{ duration: 0.45, delay: 2, ease: [0.32, 0.72, 0, 1] }}
+              className="absolute bottom-0 left-0 right-0 z-30">
+              <div className="bg-[#111113]/95 backdrop-blur-xl border-t border-zinc-800/60">
+                <div className="max-w-[1440px] mx-auto px-8 sm:px-12 py-4 flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between">
+                  <div className="space-y-0.5 max-w-xl">
+                    <p className="text-sm font-sans font-semibold text-white">We use cookies</p>
+                    <p className="text-xs text-zinc-400 font-light leading-relaxed">We use cookies to help this site function and to understand how you use it, so we can improve your experience.</p>
+                  </div>
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <button onClick={() => acceptCookies(false)} className="px-4 py-2 rounded-full text-[11px] font-sans font-semibold bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white transition-all duration-200">Manage Cookies</button>
+                    <button onClick={() => acceptCookies(false)} className="px-4 py-2 rounded-full text-[11px] font-sans font-semibold bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white transition-all duration-200">Reject non-essential</button>
+                    <button onClick={() => acceptCookies(true)} className="px-4 py-2 rounded-full text-[11px] font-sans font-semibold bg-white text-zinc-950 hover:bg-zinc-100 transition-all duration-200">Accept all</button>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.section>
 
       {/* ═══ LLM SOLUTIONS ══════════════════════════════════════════════════════ */}
@@ -232,7 +291,7 @@ export default function ServicesPage() {
               <h2 className="text-3xl sm:text-4xl font-display font-semibold text-white tracking-tight leading-tight">
                 <WordReveal text="Agentic AI" />
               </h2>
-              <p className="text-sm text-zinc-400 font-light leading-relaxed">
+              <p className="text-sm text-zinc-300 font-light leading-relaxed">
                 Autonomous AI systems that plan multi-step operations, call tools, read databases, and complete complex enterprise tasks end-to-end. Move beyond chatbots into cognitive automation.
               </p>
               <div className="flex flex-wrap gap-2">
@@ -241,7 +300,7 @@ export default function ServicesPage() {
             </div>
             <div className="lg:col-span-8 space-y-5">
               {/* Agentic AI Flow Diagram */}
-              <div className="p-6 rounded-3xl bg-zinc-950 border border-zinc-900 space-y-4">
+              <div className="p-6 rounded-3xl bg-zinc-950 border border-zinc-900 space-y-4 hover:border-zinc-700 hover:shadow-[0_8px_32px_rgba(59,130,246,0.08)] transition-all duration-300">
                 <h3 className="text-[10px] font-sans font-bold text-zinc-500 uppercase tracking-widest">How Agentic AI Executes a Task</h3>
                 <FlowDiagram dark steps={[
                   { label: 'Goal', sub: 'User objective', icon: <Lightbulb className="w-3.5 h-3.5 text-violet-400" /> },
@@ -292,7 +351,7 @@ export default function ServicesPage() {
             </div>
             <div className="lg:col-span-8 space-y-5">
               {/* RAG Architecture Diagram */}
-              <div className="p-6 rounded-3xl bg-zinc-950 border border-zinc-900 space-y-4">
+              <div className="p-6 rounded-3xl bg-zinc-950 border border-zinc-900 space-y-4 hover:border-zinc-700 hover:shadow-[0_8px_32px_rgba(59,130,246,0.08)] transition-all duration-300">
                 <h3 className="text-[10px] font-sans font-bold text-zinc-500 uppercase tracking-widest">RAG Pipeline Architecture</h3>
                 <div className="grid grid-cols-1 gap-3">
                   <div className="flex flex-col sm:flex-row items-center gap-3">
@@ -315,7 +374,7 @@ export default function ServicesPage() {
                     ]} />
                   </div>
                 </div>
-                <p className="text-[10px] text-zinc-500 font-light">Average query latency: 280ms end-to-end. All retrieval happens inside your private VPC — no data leaves your environment.</p>
+                <p className="text-[10px] text-zinc-400 font-light">Average query latency: 280ms end-to-end. All retrieval happens inside your private VPC — no data leaves your environment.</p>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <CapCard icon={<BookOpen className="w-4 h-4 text-blue-600" />} title="Enterprise Knowledge Base"
@@ -379,14 +438,14 @@ export default function ServicesPage() {
               <h2 className="text-3xl sm:text-4xl font-display font-semibold text-white tracking-tight leading-tight">
                 <WordReveal text="Voice AI" />
               </h2>
-              <p className="text-sm text-zinc-400 font-light leading-relaxed">
+              <p className="text-sm text-zinc-300 font-light leading-relaxed">
                 Real-time conversational voice agents for enterprise inbound support, outbound sales, and automated call analytics. Sub-300ms response latency, multilingual, fully integrated into your telephony and CRM stack.
               </p>
               <div className="flex flex-wrap gap-2">
                 {['Deepgram Nova-2', 'ElevenLabs v2', 'Whisper v3', 'Cartesia Sonic', 'Twilio', 'Vonage'].map(t => <DarkTag key={t} label={t} />)}
               </div>
               {/* Voice latency diagram */}
-              <div className="p-4 rounded-2xl bg-[#0c0c0e] border border-zinc-900 space-y-3 mt-2">
+              <div className="p-4 rounded-2xl bg-[#0c0c0e] border border-zinc-900 space-y-3 mt-2 hover:border-zinc-700 hover:shadow-[0_4px_20px_rgba(99,102,241,0.1)] transition-all duration-300">
                 <h4 className="text-[10px] font-sans font-bold text-zinc-500 uppercase tracking-widest">Real-Time Voice Pipeline</h4>
                 <FlowDiagram dark steps={[
                   { label: 'Caller', icon: <Mic className="w-3 h-3 text-blue-400" /> },
@@ -462,7 +521,7 @@ export default function ServicesPage() {
               <h2 className="text-3xl sm:text-4xl font-display font-semibold text-white tracking-tight leading-tight">
                 <WordReveal text="Custom AI Development" />
               </h2>
-              <p className="text-sm text-zinc-400 font-light leading-relaxed">
+              <p className="text-sm text-zinc-300 font-light leading-relaxed">
                 Bespoke model fine-tuning, custom architecture development, and sovereign deployment on your cloud or on-premise. Every model ships with monitoring, versioning, and automated retraining pipelines.
               </p>
               <div className="flex flex-wrap gap-2">
@@ -530,12 +589,12 @@ export default function ServicesPage() {
             <h2 className="text-3xl sm:text-4xl font-display font-semibold text-white tracking-tight">
               <WordReveal text="Six-phase AI delivery methodology." />
             </h2>
-            <p className="text-sm text-zinc-400 mt-4 font-light leading-relaxed">
+            <p className="text-sm text-zinc-300 mt-4 font-light leading-relaxed">
               Every Fixl AI engagement follows a structured delivery framework designed to minimise risk, accelerate time-to-value, and ensure every deployed system is production-grade from day one.
             </p>
           </div>
           {/* Phase flow diagram */}
-          <div className="p-6 rounded-3xl bg-[#0c0c0e] border border-zinc-900">
+          <div className="p-6 rounded-3xl bg-[#0c0c0e] border border-zinc-900 hover:border-zinc-700 hover:shadow-[0_8px_32px_rgba(59,130,246,0.08)] transition-all duration-300">
             <FlowDiagram dark steps={[
               { label: 'Discovery', sub: 'Week 1', icon: <Search className="w-3.5 h-3.5 text-blue-400" /> },
               { label: 'Assessment', sub: 'Week 2', icon: <TestTube className="w-3.5 h-3.5 text-purple-400" /> },
@@ -554,13 +613,13 @@ export default function ServicesPage() {
               { num: '05', icon: <Server className="w-4 h-4 text-indigo-400" />, title: 'Deployment', desc: 'Zero-downtime blue-green rollout with automated CI/CD, monitoring integration, runbook documentation, and SLA activation.' },
               { num: '06', icon: <TrendingUp className="w-4 h-4 text-indigo-400" />, title: 'Optimisation', desc: 'Continuous drift monitoring, auto-retraining triggers, and quarterly KPI reviews ensuring performance stays above agreed thresholds.' },
             ].map((phase, i) => (
-              <div key={i} className="group p-6 rounded-3xl bg-[#0c0c0e] border border-zinc-900 hover:border-zinc-700 hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-all duration-300">
+              <div key={i} className="group p-6 rounded-3xl bg-[#0c0c0e] border border-zinc-900 hover:border-indigo-800/50 hover:-translate-y-1.5 hover:shadow-[0_12px_40px_rgba(99,102,241,0.15)] transition-all duration-300 cursor-pointer overflow-hidden relative">
                 <div className="flex items-start justify-between mb-4">
                   <div className="w-9 h-9 rounded-xl bg-zinc-950 border border-zinc-800 flex items-center justify-center group-hover:scale-110 transition-transform">{phase.icon}</div>
                   <span className="text-[10px] font-sans font-bold text-zinc-600 tracking-widest">{phase.num}</span>
                 </div>
                 <h3 className="text-sm font-sans font-bold text-white mb-2">{phase.title}</h3>
-                <p className="text-xs text-zinc-500 leading-relaxed font-light">{phase.desc}</p>
+                <p className="text-xs text-zinc-400 leading-relaxed font-light">{phase.desc}</p>
               </div>
             ))}
           </div>
@@ -586,8 +645,8 @@ export default function ServicesPage() {
               { icon: <TestTube className="w-5 h-5 text-violet-600" />, title: 'Evaluation', desc: 'RAGAS, TruLens, and custom domain benchmark suites.' },
               { icon: <Repeat className="w-5 h-5 text-indigo-600" />, title: 'CI/CD', desc: 'GitHub Actions pipelines with model gating and auto-rollback.' },
             ].map((item, i) => (
-              <div key={i} className="group p-6 rounded-3xl bg-zinc-50 border border-zinc-200 hover:border-zinc-300 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 text-center">
-                <div className="w-11 h-11 rounded-2xl bg-white border border-zinc-200 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform shadow-sm">{item.icon}</div>
+              <div key={i} className="group p-6 rounded-3xl bg-zinc-50 border border-zinc-200 hover:border-blue-100 hover:shadow-lg hover:-translate-y-1.5 hover:bg-white transition-all duration-300 text-center cursor-pointer">
+                <div className="w-11 h-11 rounded-2xl bg-white border border-zinc-200 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:border-blue-200 group-hover:shadow-md transition-all duration-300 shadow-sm">{item.icon}</div>
                 <h3 className="text-xs font-sans font-bold text-zinc-950 mb-2">{item.title}</h3>
                 <p className="text-[11px] text-zinc-500 leading-relaxed font-light">{item.desc}</p>
               </div>
@@ -602,13 +661,13 @@ export default function ServicesPage() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-blue-900/10 blur-[130px] pointer-events-none" />
         <div className="max-w-[1440px] mx-auto px-8 sm:px-12 space-y-10 relative z-10">
           <div style={clipHero}
-            className="relative p-10 sm:p-16 bg-gradient-to-tr from-blue-900/40 via-zinc-950 to-indigo-950/30 text-center space-y-8 border border-zinc-800 shadow-2xl overflow-hidden">
+            className="relative p-10 sm:p-16 bg-gradient-to-tr from-blue-900/40 via-zinc-950 to-indigo-950/30 text-center space-y-8 border border-zinc-800 shadow-2xl overflow-hidden hover:border-indigo-800/60 hover:shadow-[0_0_80px_rgba(99,102,241,0.12),0_32px_64px_rgba(0,0,0,0.5)] transition-all duration-500 group">
             <div className="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none" />
             <div className="max-w-2xl mx-auto space-y-3 relative z-10">
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-semibold text-white tracking-tight leading-tight">
                 <WordReveal text="Ready to build your enterprise AI system?" />
               </h2>
-              <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed font-light max-w-lg mx-auto">
+              <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-light max-w-lg mx-auto">
                 Book a 30-minute discovery call with our principal AI engineers. We'll scope your system and outline a delivery timeline within the call.
               </p>
             </div>
@@ -629,7 +688,7 @@ export default function ServicesPage() {
                 </div>
                 <span className="font-display font-semibold text-white text-sm tracking-tight">Fixl AI</span>
               </div>
-              <p className="text-zinc-500 leading-relaxed font-light text-[11px]">Custom AI systems, model integrations, and autonomous workflows. Built for enterprise. Deployed in weeks.</p>
+              <p className="text-zinc-400 leading-relaxed font-light text-[11px]">Custom AI systems, model integrations, and autonomous workflows. Built for enterprise. Deployed in weeks.</p>
               <div className="text-zinc-600 font-sans text-[10px] uppercase tracking-wider">&copy; {new Date().getFullYear()} Fixl AI. All rights reserved.</div>
             </div>
             {[

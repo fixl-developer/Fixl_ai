@@ -399,184 +399,97 @@ export default function LandingPage() {
         <div className="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-blue-900/10 blur-[130px] pointer-events-none animate-pulse" />
 
-        <div className="max-w-[1440px] mx-auto px-8 sm:px-12 relative z-10 w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <div className="max-w-[1440px] mx-auto px-8 sm:px-12 relative z-10 w-full flex flex-col items-center text-center space-y-8">
 
-          {/* Hero left text */}
+          {/* Pill badge */}
           <motion.div
-            className="lg:col-span-7 space-y-6 text-left"
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.1 }}
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
           >
-            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-display font-semibold text-white tracking-tight leading-[1.1]">
-              Redefine Systems <br />
-              With Sovereign <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-300 to-white">
-                Enterprise AI
-              </span>
-            </h1>
+            <span className="inline-flex items-center px-4 py-1.5 rounded-full text-[11px] font-sans font-semibold bg-zinc-900 border border-zinc-800 text-zinc-300 tracking-wide">
+              Full-Spectrum Enterprise AI Engineering
+            </span>
+          </motion.div>
 
-            <p className="text-sm text-zinc-400 font-light leading-relaxed max-w-xl">
-              Fixl AI engineers and integrates bespoke, air-gapped cognitive frameworks natively into your core infrastructure.
-              Unleash autonomous agentic orchestration, sub-second semantic retrieval, and bulletproof security firewalls.
-            </p>
+          {/* Main heading */}
+          <motion.h1
+            className="text-5xl sm:text-6xl lg:text-7xl font-display font-semibold text-white tracking-tight leading-[1.1] max-w-3xl"
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.2 }}
+          >
+            What can we{' '}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-300 to-white">
+              build for you?
+            </span>
+          </motion.h1>
 
-            <div className="flex flex-wrap items-center gap-4 pt-2">
-              <a href="#results" className="group px-6 py-3.5 rounded-full font-sans text-sm font-medium bg-white text-zinc-950 hover:bg-blue-50 hover:shadow-[0_8px_32px_rgba(255,255,255,0.28)] hover:scale-[1.04] transition-all duration-200 flex items-center shadow-lg">
-                Initiate Architecture
-                <ArrowRight className="w-3.5 h-3.5 ml-2 group-hover:translate-x-1 transition-transform duration-200" />
-              </a>
-              <a href="#ecosystem" className="group px-5 py-3.5 rounded-full font-sans text-sm font-medium bg-zinc-900/80 border border-zinc-800 text-zinc-300 hover:text-white hover:border-blue-500/40 hover:bg-zinc-900 hover:shadow-[0_0_20px_rgba(59,130,246,0.12)] transition-all duration-200 flex items-center space-x-2 shadow-xs">
-                <div className="w-5 h-5 rounded-full bg-blue-600 flex items-center justify-center">
-                  <Play className="w-2.5 h-2.5 text-white fill-current ml-0.5" />
-                </div>
-                <span>Explore Capabilities</span>
-              </a>
+          {/* Decorative input bar */}
+          <motion.div
+            className="w-full max-w-2xl"
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.3 }}
+          >
+            <div className="bg-zinc-900/80 border border-zinc-800 rounded-2xl px-6 py-4 text-sm text-zinc-500 flex items-center justify-between h-[72px]">
+              <span className="font-sans font-light">Describe your AI challenge...</span>
+              <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center flex-shrink-0">
+                <ArrowRight className="w-4 h-4 text-zinc-950" />
+              </div>
             </div>
           </motion.div>
 
-          {/* Hero Right — interactive Sentry console */}
+          {/* Category chips */}
           <motion.div
-            className="lg:col-span-5 relative hidden lg:block"
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+            className="flex flex-wrap items-center justify-center gap-2"
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.4 }}
           >
-            <div className="absolute -inset-1 rounded-3xl bg-blue-600/15 opacity-60 blur-xl" />
-
-            <div className="relative p-6 rounded-[2rem] bg-[#0c0c0e]/95 border border-zinc-800/80 shadow-2xl space-y-4">
-              <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
-                <div className="flex items-center space-x-2">
-                  <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
-                  <span className="text-[10px] font-sans font-medium text-zinc-400">Fixl AI Sentry Control</span>
-                </div>
-                <div className="px-2 py-0.5 rounded bg-zinc-900 border border-zinc-850 text-[10px] font-sans text-blue-400 font-semibold">Live Shell</div>
-              </div>
-
-              <div className="space-y-3">
-                <div className="text-left">
-                  <label className="text-[10px] font-sans text-zinc-500 font-medium">Query Cognitive Model Pipeline</label>
-                  <div className="mt-1 flex space-x-2">
-                    <input
-                      type="text"
-                      value={heroPromptInput}
-                      onChange={(e) => setHeroPromptInput(e.target.value)}
-                      className="flex-grow min-w-0 bg-[#050507] border border-zinc-800/60 rounded-xl px-3 py-2 text-xs text-zinc-300 focus:outline-none focus:border-blue-500 font-sans"
-                    />
-                    <button
-                      onClick={runHeroSimulation}
-                      disabled={isHeroSimulating}
-                      className="px-3 rounded-xl bg-blue-600 text-white hover:bg-blue-500 hover:shadow-[0_0_16px_rgba(59,130,246,0.5)] hover:scale-105 transition-all duration-200 disabled:bg-zinc-800 disabled:text-zinc-500 flex items-center justify-center flex-shrink-0"
-                    >
-                      {isHeroSimulating ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <ArrowRight className="w-3.5 h-3.5" />}
-                    </button>
-                  </div>
-                </div>
-
-                <div className="h-36 bg-[#030305] rounded-xl border border-zinc-900 p-3 overflow-y-auto text-left space-y-1.5 scrollbar-thin">
-                  {heroSimulatedLogs.map((log, idx) => (
-                    <div key={idx} className="text-xs font-sans leading-normal flex items-start space-x-1.5">
-                      <span className="text-blue-500 select-none">&gt;</span>
-                      <span className={idx === heroSimulatedLogs.length - 1 ? "text-zinc-200 font-medium" : "text-zinc-500"}>{log}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="space-y-1">
-                  <div className="flex justify-between text-[10px] font-sans text-zinc-500 font-medium">
-                    <span>System Coherence Tuning</span>
-                    <span>{heroSimProgress}%</span>
-                  </div>
-                  <div className="h-1 bg-zinc-900 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-300"
-                      style={{ width: `${heroSimProgress}%` }}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="border-t border-zinc-850 pt-3 flex items-center justify-between text-[10px] font-sans text-zinc-500">
-                <div className="flex items-center space-x-1">
-                  <Cpu className="w-3.5 h-3.5 text-blue-500" />
-                  <span>Air-Gapped Sync</span>
-                </div>
-                <span>Latency: 14ms (avg)</span>
-              </div>
-            </div>
+            {[
+              { label: 'LLM Solutions', href: '/services#llm' },
+              { label: 'Agentic AI', href: '/services#agentic' },
+              { label: 'RAG Systems', href: '/services#rag' },
+              { label: 'Voice AI', href: '/services#voice' },
+              { label: 'AI Automation', href: '/services#automation' },
+            ].map((chip) => (
+              <Link
+                key={chip.href}
+                href={chip.href}
+                className="px-4 py-2 rounded-full text-[11px] bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white hover:border-zinc-700 transition-all font-sans"
+              >
+                {chip.label}
+              </Link>
+            ))}
           </motion.div>
 
         </div>
 
-        {/* ── Cookie consent — anchored to hero bottom, scrolls away with hero ── */}
+        {/* ── Cookie banner — anchored to hero bottom, scrolls away ── */}
         <AnimatePresence>
           {showCookies && (
             <motion.div
               initial={{ y: 24, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: 24, opacity: 0 }}
-              transition={{ duration: 0.55, delay: 1.8, ease: [0.32, 0.72, 0, 1] }}
+              transition={{ duration: 0.45, delay: 2, ease: [0.32, 0.72, 0, 1] }}
               className="absolute bottom-0 left-0 right-0 z-30"
             >
-              <div className="bg-[#0b0b0e]/92 backdrop-blur-xl border-t border-zinc-800/70 shadow-2xl">
-                <div className="max-w-[1440px] mx-auto px-8 sm:px-12 py-5">
-                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
-
-                    {/* Left: detailed content */}
-                    <div className="lg:col-span-8 space-y-2.5">
-                      <div className="flex items-center space-x-2.5">
-                        <div className="w-7 h-7 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center flex-shrink-0">
-                          <Shield className="w-3.5 h-3.5 text-blue-400" />
-                        </div>
-                        <span className="text-xs font-sans font-bold text-white tracking-wide">Privacy & Cookie Preferences</span>
-                      </div>
-
-                      <p className="text-[11px] text-zinc-400 font-light leading-relaxed pl-9">
-                        Fixl AI uses cookies and similar technologies to keep the platform secure and to improve your experience.
-                        Essential cookies are required for core functionality. Analytics cookies help us understand how the site is used.
-                        Personalisation cookies remember your settings across sessions. No data is ever shared with third parties without
-                        explicit consent.{' '}
-                        <a href="#shift" className="text-blue-400 underline underline-offset-2 hover:text-blue-300 transition-colors">
-                          Read our Privacy Charter →
-                        </a>
-                      </p>
-
-                      <div className="flex flex-wrap gap-4 text-[10px] text-zinc-500 pl-9 font-sans">
-                        <span className="flex items-center gap-1.5">
-                          <CheckCircle2 className="w-3 h-3 text-blue-500 flex-shrink-0" />
-                          Essential (always active)
-                        </span>
-                        <span className="flex items-center gap-1.5">
-                          <CheckCircle2 className="w-3 h-3 text-zinc-500 flex-shrink-0" />
-                          Analytics & Performance
-                        </span>
-                        <span className="flex items-center gap-1.5">
-                          <CheckCircle2 className="w-3 h-3 text-zinc-500 flex-shrink-0" />
-                          Personalisation
-                        </span>
-                        <span className="flex items-center gap-1.5">
-                          <CheckCircle2 className="w-3 h-3 text-zinc-500 flex-shrink-0" />
-                          Marketing & Retargeting
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Right: action buttons */}
-                    <div className="lg:col-span-4 flex flex-wrap items-center gap-2 lg:justify-end">
-                      <button
-                        onClick={() => acceptCookies(false)}
-                        className="px-4 py-2 rounded-full text-[11px] font-sans font-semibold text-zinc-400 bg-zinc-900 border border-zinc-800 hover:text-white hover:bg-zinc-800 hover:border-zinc-600 hover:shadow-[0_0_14px_rgba(255,255,255,0.05)] transition-all duration-200"
-                      >
-                        Essential only
-                      </button>
-                      <button
-                        onClick={() => acceptCookies(true)}
-                        className="px-5 py-2 rounded-full text-[11px] font-sans font-semibold bg-white text-zinc-950 hover:bg-blue-50 hover:shadow-[0_4px_20px_rgba(255,255,255,0.25)] hover:scale-[1.04] transition-all duration-200 shadow-lg"
-                      >
-                        Accept all cookies
-                      </button>
-                    </div>
-
+              <div className="bg-[#111113]/95 backdrop-blur-xl border-t border-zinc-800/60">
+                <div className="max-w-[1440px] mx-auto px-8 sm:px-12 py-4 flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between">
+                  <div className="space-y-0.5 max-w-xl">
+                    <p className="text-sm font-sans font-semibold text-white">We use cookies</p>
+                    <p className="text-xs text-zinc-400 font-light leading-relaxed">
+                      We use cookies to help this site function, understand service usage, and support marketing efforts.{' '}
+                      <a href="#" className="underline text-zinc-300 hover:text-white transition-colors">Manage preferences</a> or view our{' '}
+                      <a href="#" className="underline text-zinc-300 hover:text-white transition-colors">Cookie Policy</a>.
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <button onClick={() => acceptCookies(false)} className="px-4 py-2 rounded-full text-[11px] font-sans font-semibold bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white transition-all duration-200">Manage Cookies</button>
+                    <button onClick={() => acceptCookies(false)} className="px-4 py-2 rounded-full text-[11px] font-sans font-semibold bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white transition-all duration-200">Reject non-essential</button>
+                    <button onClick={() => acceptCookies(true)} className="px-4 py-2 rounded-full text-[11px] font-sans font-semibold bg-white text-zinc-950 hover:bg-zinc-100 transition-all duration-200">Accept all</button>
                   </div>
                 </div>
               </div>
@@ -678,7 +591,7 @@ export default function LandingPage() {
                   {activeShiftTab === 'stats' && (
                     <div className="grid grid-cols-2 gap-4">
                       {shiftStats.map((st, i) => (
-                        <div key={i} className="p-3 bg-zinc-50 rounded-xl border border-zinc-200/60 shadow-xs">
+                        <div key={i} className="p-3 bg-zinc-50 rounded-xl border border-zinc-200/60 shadow-xs hover:-translate-y-1 hover:border-zinc-300 hover:shadow-md transition-all duration-200">
                           <div className="text-xl sm:text-3xl font-display font-bold text-blue-600">{st.value}</div>
                           <p className="text-xs text-zinc-500 mt-1">{st.label}</p>
                         </div>
@@ -728,7 +641,7 @@ export default function LandingPage() {
                 className={`p-6 rounded-3xl bg-white border transition-all duration-300 flex flex-col justify-between min-h-[220px] relative overflow-hidden group cursor-pointer ${
                   hoveredEcoId === eco.id
                     ? 'border-zinc-950 bg-zinc-950 text-white shadow-[0_8px_32px_rgba(0,0,0,0.4)] -translate-y-2'
-                    : 'border-zinc-200/80 hover:border-zinc-400 hover:shadow-[0_4px_20px_rgba(0,0,0,0.08)] hover:-translate-y-0.5'
+                    : 'border-zinc-200/80 hover:border-zinc-400 hover:shadow-[0_4px_20px_rgba(0,0,0,0.08)] hover:-translate-y-1 hover:shadow-md'
                 }`}
               >
                 <div className="space-y-4 relative z-10 text-left">
@@ -771,7 +684,7 @@ export default function LandingPage() {
                 <WordReveal text="Our core capabilities." />
               </h2>
             </div>
-            <p className="text-sm text-zinc-400 max-w-md text-left font-light leading-relaxed">
+            <p className="text-sm text-zinc-300 max-w-md text-left font-light leading-relaxed">
               We deploy foundation models, custom retrieval pipelines, and secure API integrations.
             </p>
           </div>
@@ -792,7 +705,7 @@ export default function LandingPage() {
                     className={`w-full p-4 rounded-2xl text-left border transition-all duration-200 flex items-start space-x-4 ${
                       activeCoreTab === tab.id
                         ? 'bg-zinc-900 border-zinc-700 shadow-[0_0_20px_rgba(59,130,246,0.07)]'
-                        : 'bg-transparent border-transparent hover:bg-zinc-900/50 hover:border-zinc-800/60 hover:shadow-[0_2px_12px_rgba(0,0,0,0.2)]'
+                        : 'bg-transparent border-transparent hover:bg-zinc-900/50 hover:border-zinc-700 hover:shadow-[0_8px_32px_rgba(59,130,246,0.08)] hover:-translate-y-1'
                     }`}
                   >
                     <span className="font-sans text-xs font-semibold text-zinc-500">{tab.num}</span>
@@ -831,7 +744,7 @@ export default function LandingPage() {
                     <div>
                       <span className="text-[10px] font-sans text-blue-400 font-medium">Multi-Model Orchestrator</span>
                       <h3 className="text-base font-display font-bold text-white mt-1">Foundation Model Agnostic Layer</h3>
-                      <p className="text-xs text-zinc-400 mt-2 font-light leading-relaxed">
+                      <p className="text-xs text-zinc-300 mt-2 font-light leading-relaxed">
                         We deploy, coordinate, and host leading open weights and proprietary models. Our orchestrator dynamically routes prompt payloads to the best aligned LLM according to latency, query complexity, and budget constraints.
                       </p>
                     </div>
@@ -857,7 +770,7 @@ export default function LandingPage() {
                     <div>
                       <span className="text-[10px] font-sans text-purple-400 font-medium">Goal-Directed Autonomy</span>
                       <h3 className="text-base font-display font-bold text-white mt-1">Dynamic Task Swarm Planning</h3>
-                      <p className="text-xs text-zinc-400 mt-2 font-light leading-relaxed">
+                      <p className="text-xs text-zinc-300 mt-2 font-light leading-relaxed">
                         Rather than legacy linear steps, our agents synthesize natural text prompts, establish a goal map, call enterprise backend services (SAP, Salesforce, CRM), examine execution quality, and self-correct on failures.
                       </p>
                     </div>
@@ -881,7 +794,7 @@ export default function LandingPage() {
                     <div>
                       <span className="text-[10px] font-sans text-blue-400 font-medium">Sub-second Vector Knowledge</span>
                       <h3 className="text-base font-display font-bold text-white mt-1">Enterprise Hybrid Document Sync</h3>
-                      <p className="text-xs text-zinc-400 mt-2 font-light leading-relaxed">
+                      <p className="text-xs text-zinc-300 mt-2 font-light leading-relaxed">
                         Connect unstructured raw enterprise document files directly into models safely. Our hybrid indexing systems perform instant metadata pre-filtering, dense vector mapping, and contextual ranking with clear citations.
                       </p>
                     </div>
@@ -906,7 +819,7 @@ export default function LandingPage() {
                     <div>
                       <span className="text-[10px] font-sans text-indigo-400 font-medium">Transactional Back Office Loop</span>
                       <h3 className="text-base font-display font-bold text-white mt-1">Sovereign Automation Pipelines</h3>
-                      <p className="text-xs text-zinc-400 mt-2 font-light leading-relaxed">
+                      <p className="text-xs text-zinc-300 mt-2 font-light leading-relaxed">
                         Bypass slow manual review bottlenecks. Fixl AI automates continuous, complex transactional work lines — classifying incoming emails, checking ledger values, processing PDFs, and coordinating DevOps.
                       </p>
                     </div>
@@ -969,7 +882,7 @@ export default function LandingPage() {
                   className={`p-3 rounded-2xl border transition-all duration-300 text-left flex items-center space-x-2.5 ${
                     selectedSolution === sol.id
                       ? 'bg-zinc-950 text-white border-zinc-950 shadow-[0_4px_20px_rgba(0,0,0,0.2)] scale-[1.02]'
-                      : 'bg-white text-zinc-600 border-zinc-200 hover:border-zinc-400 hover:text-zinc-900 hover:shadow-[0_2px_14px_rgba(0,0,0,0.07)] hover:scale-[1.02]'
+                      : 'bg-white text-zinc-600 border-zinc-200 hover:border-zinc-300 hover:text-zinc-900 hover:shadow-md hover:-translate-y-1 hover:scale-[1.02]'
                   }`}
                 >
                   <span className="text-xs sm:text-sm font-sans font-semibold px-1">{sol.label}</span>
@@ -1143,7 +1056,7 @@ export default function LandingPage() {
                     <div className="text-[10px] font-sans uppercase tracking-widest text-zinc-500 font-bold">
                       SECTORS &amp; SECURITY
                     </div>
-                    <p className="text-xs text-zinc-400 font-light leading-relaxed">
+                    <p className="text-xs text-zinc-300 font-light leading-relaxed">
                       Fixl AI designs compliance-ready AI systems for regulated industries — secured with active guardrails, adversarial red-teaming, and certified infrastructure standards.
                     </p>
                   </div>
@@ -1182,7 +1095,7 @@ export default function LandingPage() {
                 ].map((item, idx) => (
                   <div
                     key={idx}
-                    className={`group p-8 lg:p-10 flex flex-col justify-between gap-4 bg-[#04111f] hover:bg-[#071929] hover:shadow-[inset_3px_0_0_rgba(59,130,246,0.45)] transition-all duration-300 cursor-default
+                    className={`group p-8 lg:p-10 flex flex-col justify-between gap-4 bg-[#04111f] hover:bg-[#071929] hover:border-zinc-700 hover:shadow-[0_8px_32px_rgba(59,130,246,0.08)] hover:-translate-y-1 transition-all duration-300 cursor-default
                       ${idx % 2 === 0 ? 'sm:border-r border-[#1e3558]/60' : ''}
                       ${idx < 2 ? 'sm:border-b border-[#1e3558]/60' : ''}
                     `}
@@ -1194,7 +1107,7 @@ export default function LandingPage() {
                       <h3 className="text-xl sm:text-2xl lg:text-[1.65rem] font-display font-bold text-white leading-tight group-hover:text-blue-50 transition-colors duration-300">
                         {item.title}
                       </h3>
-                      <p className="text-xs sm:text-sm text-zinc-400 font-light leading-relaxed">
+                      <p className="text-xs sm:text-sm text-zinc-300 font-light leading-relaxed">
                         {item.desc}
                       </p>
                     </div>
@@ -1245,7 +1158,7 @@ export default function LandingPage() {
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-semibold text-white tracking-tight leading-tight">
                 <WordReveal text="Secure, custom AI systems. Deploy Fixl AI today." />
               </h2>
-              <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed font-light max-w-lg mx-auto">
+              <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-light max-w-lg mx-auto">
                 Contact us to discuss your requirements and design a custom plan for your infrastructure. Deploy in weeks.
               </p>
             </div>

@@ -1,7 +1,7 @@
 ﻿'use client';
 
 import React, { useEffect, useRef, useState, createContext, useContext } from 'react';
-import { motion, useScroll, useTransform } from 'motion/react';
+import { motion, AnimatePresence, useScroll, useTransform } from 'motion/react';
 import type { MotionValue } from 'motion/react';
 import Lenis from 'lenis';
 import Link from 'next/link';
@@ -69,7 +69,7 @@ const FlowDiagram = ({ steps, dark = false }: {
   <div className="flex flex-col sm:flex-row items-center gap-3 flex-wrap">
     {steps.map((step, i) => (
       <React.Fragment key={i}>
-        <div className={`flex flex-col items-center gap-1 px-4 py-3 rounded-2xl border text-center min-w-[90px] ${dark ? 'bg-zinc-950 border-zinc-800' : 'bg-zinc-50 border-zinc-200'}`}>
+        <div className={`flex flex-col items-center gap-1 px-4 py-3 rounded-2xl border text-center min-w-[90px] hover:scale-105 hover:-translate-y-0.5 transition-all duration-200 ${dark ? 'bg-zinc-950 border-zinc-800' : 'bg-zinc-50 border-zinc-200'}`}>
           {step.icon && <span className="mb-0.5">{step.icon}</span>}
           <span className={`text-[11px] font-sans font-bold ${dark ? 'text-zinc-200' : 'text-zinc-900'}`}>{step.label}</span>
           {step.sub && <span className={`text-[10px] font-light leading-tight ${dark ? 'text-zinc-500' : 'text-zinc-500'}`}>{step.sub}</span>}
@@ -194,6 +194,9 @@ export default function EnterprisePage() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [formSent, setFormSent] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '', company: '', role: '', message: '' });
+  const [showCookies, setShowCookies] = useState(false);
+  useEffect(() => { if (typeof window !== 'undefined' && !localStorage.getItem('fixiai-cookies')) setShowCookies(true); }, []);
+  const acceptCookies = (all: boolean) => { localStorage.setItem('fixiai-cookies', all ? 'all' : 'essential'); setShowCookies(false); };
 
   useEffect(() => {
     const lenis = new Lenis({
@@ -262,7 +265,7 @@ export default function EnterprisePage() {
                 Enterprise AI.<br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-300 to-white">Delivered with a guarantee.</span>
               </motion.h1>
               <motion.p initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.18 }}
-                className="text-sm text-zinc-400 font-light leading-relaxed max-w-lg">
+                className="text-sm text-zinc-300 font-light leading-relaxed max-w-lg">
                 Transparent fixed-scope contracts. SOC-2 and ISO 27001 certified infrastructure. ROI guarantee backed by SLA credits. If agreed performance metrics aren't hit within 90 days, you don't pay for that period.
               </motion.p>
               <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.26 }}
@@ -292,15 +295,39 @@ export default function EnterprisePage() {
                 { icon: <Server className="w-6 h-6 text-purple-400" />, title: 'Air-Gap Ready', desc: 'On-premise deployment with no outbound internet dependency required.' },
                 { icon: <Award className="w-6 h-6 text-violet-400" />, title: 'Compliance Certified', desc: 'SOC-2 Type II, ISO 27001, GDPR, HIPAA, PCI DSS, EU AI Act aligned.' },
               ].map((item, i) => (
-                <div key={i} className="group p-5 rounded-2xl bg-zinc-950 border border-zinc-900 hover:border-zinc-700 transition-all duration-200 space-y-3">
-                  <div className="w-10 h-10 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center group-hover:scale-110 transition-transform">{item.icon}</div>
-                  <h4 className="text-xs font-sans font-bold text-white">{item.title}</h4>
-                  <p className="text-[11px] text-zinc-500 font-light leading-relaxed">{item.desc}</p>
+                <div key={i} className="group relative overflow-hidden p-5 rounded-2xl bg-zinc-950 border border-zinc-900 hover:border-violet-800/40 hover:-translate-y-1.5 hover:shadow-[0_12px_40px_rgba(139,92,246,0.15)] hover:bg-zinc-900 transition-all duration-300 space-y-3 cursor-pointer">
+                  <div className="absolute inset-0 bg-gradient-to-br from-violet-950/0 to-indigo-950/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-inherit" />
+                  <div className="relative z-10 w-10 h-10 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center group-hover:scale-110 group-hover:border-zinc-700 transition-all duration-300">{item.icon}</div>
+                  <h4 className="relative z-10 text-xs font-sans font-bold text-white">{item.title}</h4>
+                  <p className="relative z-10 text-[11px] text-zinc-300 font-light leading-relaxed">{item.desc}</p>
                 </div>
               ))}
             </motion.div>
           </div>
         </div>
+
+        {/* Cookie banner — absolute bottom, scrolls away with hero */}
+        <AnimatePresence>
+          {showCookies && (
+            <motion.div initial={{ y: 24, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 24, opacity: 0 }}
+              transition={{ duration: 0.45, delay: 2, ease: [0.32, 0.72, 0, 1] }}
+              className="absolute bottom-0 left-0 right-0 z-30">
+              <div className="bg-[#111113]/95 backdrop-blur-xl border-t border-zinc-800/60">
+                <div className="max-w-[1440px] mx-auto px-8 sm:px-12 py-4 flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between">
+                  <div className="space-y-0.5 max-w-xl">
+                    <p className="text-sm font-sans font-semibold text-white">We use cookies</p>
+                    <p className="text-xs text-zinc-400 font-light leading-relaxed">We use cookies to help this site function and to understand how you use it, so we can improve your experience.</p>
+                  </div>
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <button onClick={() => acceptCookies(false)} className="px-4 py-2 rounded-full text-[11px] font-sans font-semibold bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white transition-all duration-200">Manage Cookies</button>
+                    <button onClick={() => acceptCookies(false)} className="px-4 py-2 rounded-full text-[11px] font-sans font-semibold bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white transition-all duration-200">Reject non-essential</button>
+                    <button onClick={() => acceptCookies(true)} className="px-4 py-2 rounded-full text-[11px] font-sans font-semibold bg-white text-zinc-950 hover:bg-zinc-100 transition-all duration-200">Accept all</button>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.section>
 
       {/* ═══ SECURITY ARCHITECTURE ══════════════════════════════════════════════ */}
@@ -335,11 +362,12 @@ export default function EnterprisePage() {
               { icon: <Settings className="w-5 h-5 text-indigo-600" />, title: 'Model Governance', desc: 'Every model version tracked in secure registry. Prompt injection detection, output validation, and hallucination scoring per request.', badges: ['EU AI Act', 'NIST AI RMF', 'Bias Testing'] },
               { icon: <Globe className="w-5 h-5 text-indigo-600" />, title: 'Business Continuity', desc: 'Multi-region active-active deployment with automated failover. RTO < 15 minutes, RPO < 5 minutes. Quarterly DR tests with documented results.', badges: ['99.99% SLA', 'Blue-Green', 'Multi-AZ', 'DR Tested'] },
             ].map((pillar, i) => (
-              <div key={i} className="group p-6 rounded-3xl bg-zinc-50 border border-zinc-200 hover:border-zinc-300 hover:-translate-y-0.5 hover:shadow-md transition-all duration-300 space-y-4">
-                <div className="w-10 h-10 rounded-2xl bg-white border border-zinc-200 flex items-center justify-center group-hover:scale-110 transition-transform shadow-sm">{pillar.icon}</div>
-                <h3 className="text-sm font-sans font-bold text-zinc-950">{pillar.title}</h3>
-                <p className="text-[11px] text-zinc-500 font-light leading-relaxed">{pillar.desc}</p>
-                <div className="flex flex-wrap gap-1.5">
+              <div key={i} className="group relative overflow-hidden p-6 rounded-3xl bg-zinc-50 border border-zinc-200 hover:border-blue-200 hover:-translate-y-1.5 hover:shadow-xl hover:bg-white transition-all duration-300 space-y-4 cursor-pointer">
+                <div className="absolute inset-0 bg-gradient-to-br from-transparent to-blue-50/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                <div className="relative z-10 w-10 h-10 rounded-2xl bg-white border border-zinc-200 flex items-center justify-center group-hover:scale-110 group-hover:shadow-md transition-all duration-300 shadow-sm">{pillar.icon}</div>
+                <h3 className="relative z-10 text-sm font-sans font-bold text-zinc-950 group-hover:text-blue-700 transition-colors duration-300">{pillar.title}</h3>
+                <p className="relative z-10 text-[11px] text-zinc-500 font-light leading-relaxed">{pillar.desc}</p>
+                <div className="relative z-10 flex flex-wrap gap-1.5">
                   {pillar.badges.map(b => <span key={b} className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-zinc-100 border border-zinc-200 text-zinc-600">{b}</span>)}
                 </div>
               </div>
@@ -375,13 +403,13 @@ export default function EnterprisePage() {
             <h2 className="text-3xl sm:text-4xl font-display font-semibold text-white tracking-tight">
               <WordReveal text="Transparent pricing. No surprises." />
             </h2>
-            <p className="text-sm text-zinc-400 mt-4 font-light leading-relaxed">
+            <p className="text-sm text-zinc-300 mt-4 font-light leading-relaxed">
               Fixed monthly retainers with fully scoped deliverables. Every plan includes private deployment, security compliance, and dedicated engineering support.
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {pricingPlans.map((plan, i) => (
-              <div key={i} className={`relative flex flex-col rounded-3xl border p-6 space-y-5 transition-all duration-200 hover:-translate-y-0.5 ${plan.highlight ? 'bg-blue-600/10 border-blue-500/40 shadow-[0_0_40px_rgba(59,130,246,0.12)]' : 'bg-zinc-950 border-zinc-800 hover:border-zinc-700 hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)]'}`}>
+              <div key={i} className={`relative flex flex-col rounded-3xl border p-6 space-y-5 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_16px_48px_rgba(99,102,241,0.2)] ${plan.highlight ? 'bg-blue-600/10 border-blue-500/40 shadow-[0_0_40px_rgba(59,130,246,0.12)]' : 'bg-zinc-950 border-zinc-800 hover:border-violet-800/40'}`}>
                 {plan.highlight && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-blue-600 text-white text-[10px] font-bold shadow-lg">Most Popular</div>
                 )}
@@ -437,9 +465,9 @@ export default function EnterprisePage() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {managedServices.map((service, i) => (
-              <div key={i} className="group p-6 rounded-3xl bg-zinc-50 border border-zinc-200 hover:border-zinc-300 hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 space-y-3">
-                <div className="w-10 h-10 rounded-2xl bg-white border border-zinc-200 flex items-center justify-center group-hover:scale-110 transition-transform shadow-sm">{service.icon}</div>
-                <h4 className="text-xs font-sans font-bold text-zinc-950">{service.title}</h4>
+              <div key={i} className="group p-6 rounded-3xl bg-zinc-50 border border-zinc-200 hover:border-blue-200 hover:-translate-y-1.5 hover:shadow-xl hover:bg-white transition-all duration-300 space-y-3 cursor-pointer">
+                <div className="w-10 h-10 rounded-2xl bg-white border border-zinc-200 flex items-center justify-center group-hover:scale-110 group-hover:border-blue-200 group-hover:shadow-md transition-all duration-300 shadow-sm">{service.icon}</div>
+                <h4 className="text-xs font-sans font-bold text-zinc-950 group-hover:text-blue-700 transition-colors duration-300">{service.title}</h4>
                 <p className="text-[11px] text-zinc-500 font-light leading-relaxed">{service.desc}</p>
               </div>
             ))}
@@ -454,7 +482,7 @@ export default function EnterprisePage() {
             <h2 className="text-3xl sm:text-4xl font-display font-semibold text-white tracking-tight">
               <WordReveal text="We guarantee ROI. Or you don't pay." />
             </h2>
-            <p className="text-sm text-zinc-400 mt-4 font-light leading-relaxed">
+            <p className="text-sm text-zinc-300 mt-4 font-light leading-relaxed">
               Every Fixl AI engagement defines measurable performance targets at kickoff. If those targets aren't achieved within 90 days of go-live, the period is credited. No disputes. No exceptions.
             </p>
           </div>
@@ -469,11 +497,11 @@ export default function EnterprisePage() {
                     { step: '2', title: 'Monitor Throughout Delivery', desc: 'Real-time dashboard shows all KPIs. Both parties review progress weekly during the build phase and monthly post-deployment.' },
                     { step: '3', title: 'Credit or Verify at 90 Days', desc: 'If all KPIs are hit: standard billing continues. If any KPI misses: the entire billing period is credited until the target is achieved and sustained.' },
                   ].map((item, i) => (
-                    <div key={i} className="flex gap-4">
+                    <div key={i} className="group flex gap-4 p-3 rounded-xl hover:bg-zinc-900/50 transition-all duration-200 cursor-default">
                       <span className="w-6 h-6 rounded-full bg-blue-900/40 border border-blue-800/50 text-blue-400 text-[10px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">{item.step}</span>
                       <div>
                         <h4 className="text-xs font-sans font-bold text-white mb-0.5">{item.title}</h4>
-                        <p className="text-[11px] text-zinc-400 font-light leading-relaxed">{item.desc}</p>
+                        <p className="text-[11px] text-zinc-300 font-light leading-relaxed">{item.desc}</p>
                       </div>
                     </div>
                   ))}
@@ -530,7 +558,7 @@ export default function EnterprisePage() {
               </thead>
               <tbody>
                 {comparisonRows.map((row, i) => (
-                  <tr key={i} className={`border-b border-zinc-100 ${i % 2 === 0 ? '' : 'bg-zinc-50/50'}`}>
+                  <tr key={i} className={`border-b border-zinc-100 transition-colors duration-150 hover:bg-indigo-50/30 ${i % 2 === 0 ? '' : 'bg-zinc-50/50'}`}>
                     <td className="py-3 pr-4 text-zinc-600 font-light">{row.feature}</td>
                     {[row.fixiai, row.cloud, row.consulting, row.startups, row.vendors].map((val, j) => (
                       <td key={j} className={`py-3 px-4 text-center ${j === 0 ? 'bg-zinc-950/3' : ''}`}>
@@ -567,7 +595,7 @@ export default function EnterprisePage() {
             <h2 className="text-3xl sm:text-4xl font-display font-semibold text-white tracking-tight">
               <WordReveal text="Measured outcomes from active engagements." />
             </h2>
-            <p className="text-sm text-zinc-400 mt-4 font-light leading-relaxed">
+            <p className="text-sm text-zinc-300 mt-4 font-light leading-relaxed">
               Client outcomes from live Fixl AI deployments — measured against the KPIs defined at contract kickoff, not at time of sale.
             </p>
           </div>
@@ -592,8 +620,9 @@ export default function EnterprisePage() {
                 outcomes: [{ metric: '23%', label: 'inventory cost reduction' }, { metric: '6 weeks', label: 'to production' }]
               },
             ].map((story, i) => (
-              <div key={i} className="group p-6 rounded-3xl bg-zinc-950 border border-zinc-900 hover:border-zinc-700 hover:-translate-y-0.5 transition-all duration-300 space-y-5">
-                <div className="grid grid-cols-2 gap-3">
+              <div key={i} className="group relative overflow-hidden p-6 rounded-3xl bg-zinc-950 border border-zinc-900 hover:border-zinc-700 hover:-translate-y-2 hover:shadow-[0_16px_48px_rgba(0,0,0,0.5)] transition-all duration-300 space-y-5 cursor-pointer">
+                <div className="absolute inset-0 bg-gradient-to-br from-transparent to-indigo-950/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                <div className="relative z-10 grid grid-cols-2 gap-3">
                   {story.outcomes.map((o, j) => (
                     <div key={j} className="p-3 rounded-xl bg-zinc-900 border border-zinc-800">
                       <div className="text-xl font-display font-bold text-blue-400">{o.metric}</div>
@@ -601,8 +630,8 @@ export default function EnterprisePage() {
                     </div>
                   ))}
                 </div>
-                <blockquote className="text-[11px] text-zinc-400 font-light leading-relaxed italic">"{story.quote}"</blockquote>
-                <div>
+                <blockquote className="relative z-10 text-[11px] text-zinc-300 font-light leading-relaxed italic">"{story.quote}"</blockquote>
+                <div className="relative z-10">
                   <div className="text-[11px] font-sans font-bold text-white">{story.name}</div>
                   <div className="text-[10px] text-zinc-600 font-light">{story.company}</div>
                 </div>
@@ -632,7 +661,7 @@ export default function EnterprisePage() {
                   { icon: <Mail className="w-4 h-4 text-purple-600" />, title: 'Email Sales', desc: 'Send your brief and we\'ll respond with a scoping document within 24 hours.' },
                   { icon: <Phone className="w-4 h-4 text-blue-600" />, title: 'Urgent Enquiry', desc: 'Enterprise and Scale clients receive dedicated contact channels with 30-minute response SLA.' },
                 ].map((item, i) => (
-                  <div key={i} className="flex gap-4 p-4 rounded-2xl bg-zinc-50 border border-zinc-200">
+                  <div key={i} className="flex gap-4 p-4 rounded-2xl bg-zinc-50 border border-zinc-200 hover:border-indigo-200 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 cursor-pointer">
                     <div className="w-8 h-8 rounded-xl bg-white border border-zinc-200 flex items-center justify-center flex-shrink-0 shadow-sm">{item.icon}</div>
                     <div>
                       <h4 className="text-xs font-sans font-bold text-zinc-950 mb-0.5">{item.title}</h4>
@@ -716,7 +745,7 @@ export default function EnterprisePage() {
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-semibold text-white tracking-tight leading-tight">
                 <WordReveal text="Your AI platform is ready to build." />
               </h2>
-              <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed font-light max-w-lg mx-auto">
+              <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-light max-w-lg mx-auto">
                 Start with a discovery call. Leave with a scoped system, timeline, and ROI-guaranteed delivery plan.
               </p>
             </div>
@@ -765,3 +794,4 @@ export default function EnterprisePage() {
     </div>
   );
 }
+

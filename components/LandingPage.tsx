@@ -855,21 +855,21 @@ export default function LandingPage() {
       {/* ═══════════════════════════════════════════════════════════════════════
           SECTION 5 — ENTERPRISE SOLUTIONS
           ═══════════════════════════════════════════════════════════════════════ */}
-      <SectionReveal id="solutions" className="relative py-10 lg:py-14 bg-white text-zinc-950 border-b border-zinc-200">
-        <div className="max-w-[1440px] mx-auto px-8 sm:px-12 space-y-8">
+      <SectionReveal id="solutions" className="relative py-8 lg:py-10 bg-white text-zinc-950 border-b border-zinc-200">
+        <div className="max-w-[1440px] mx-auto px-8 sm:px-12 space-y-5">
 
-          <div className="text-left max-w-2xl space-y-3">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-semibold text-zinc-950 tracking-tight">
+          <div className="text-left max-w-2xl space-y-2">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-display font-semibold text-zinc-950 tracking-tight">
               <WordReveal text="Custom AI systems for secure operations." />
             </h2>
-            <p className="text-sm sm:text-base text-zinc-600 leading-relaxed font-light">
+            <p className="text-xs sm:text-sm text-zinc-600 leading-relaxed font-light">
               We develop custom voice interfaces, document vision systems, fine-tuned models, and secure cloud setups.
             </p>
           </div>
 
-          <div className="p-6 md:p-10 rounded-[2.5rem] bg-zinc-50 border border-zinc-200 shadow-xs">
+          <div className="p-4 md:p-6 rounded-3xl bg-zinc-50 border border-zinc-200 shadow-xs">
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 border-b border-zinc-200 pb-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 border-b border-zinc-200 pb-4">
               {[
                 { id: 'voice', label: 'Voice AI Integration' },
                 { id: 'multimodal', label: 'Document Vision' },
@@ -879,64 +879,60 @@ export default function LandingPage() {
                 <button
                   key={sol.id}
                   onClick={() => setSelectedSolution(sol.id)}
-                  className={`p-3 rounded-2xl border transition-all duration-300 text-left flex items-center space-x-2.5 ${
+                  className={`p-2.5 rounded-xl border transition-all duration-300 text-left flex items-center space-x-2 ${
                     selectedSolution === sol.id
                       ? 'bg-zinc-950 text-white border-zinc-950 shadow-[0_4px_20px_rgba(0,0,0,0.2)] scale-[1.02]'
                       : 'bg-white text-zinc-600 border-zinc-200 hover:border-zinc-300 hover:text-zinc-900 hover:shadow-md hover:-translate-y-1 hover:scale-[1.02]'
                   }`}
                 >
-                  <span className="text-xs sm:text-sm font-sans font-semibold px-1">{sol.label}</span>
+                  <span className="text-xs font-sans font-semibold px-1">{sol.label}</span>
                 </button>
               ))}
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 pt-8 items-center">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 pt-5 items-center">
 
-              <div className="lg:col-span-6 text-left space-y-6">
-                <h3 className="text-2xl sm:text-3xl font-display font-bold text-zinc-950 tracking-tight">
+              <div className="lg:col-span-6 text-left space-y-4">
+                <h3 className="text-xl sm:text-2xl font-display font-bold text-zinc-950 tracking-tight">
                   {solutionsData[selectedSolution].title}
                 </h3>
-                <p className="text-sm sm:text-base text-zinc-600 leading-relaxed font-light">
+                <p className="text-xs sm:text-sm text-zinc-600 leading-relaxed font-light">
                   {solutionsData[selectedSolution].description}
                 </p>
 
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   {solutionsData[selectedSolution].features.map((feat, i) => (
-                    <div key={i} className="flex items-center space-x-2.5">
-                      <CheckCircle2 className="w-4 h-4 text-blue-600" />
-                      <span className="text-xs sm:text-sm font-sans font-medium text-zinc-700">{feat}</span>
+                    <div key={i} className="flex items-center space-x-2">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 flex-shrink-0" />
+                      <span className="text-xs font-sans font-medium text-zinc-700">{feat}</span>
                     </div>
                   ))}
                 </div>
 
-                <div className="grid grid-cols-3 gap-4 pt-6 border-t border-zinc-200">
+                <div className="grid grid-cols-3 gap-3 pt-4 border-t border-zinc-200">
                   {solutionsData[selectedSolution].stats.map((st, i) => (
                     <div key={i} className="space-y-0.5">
-                      <div className="text-2xl sm:text-3xl lg:text-4xl font-display font-black text-zinc-950">{st.value}</div>
-                      <div className="text-[10px] font-sans text-zinc-400 font-semibold uppercase tracking-wider leading-none">{st.label}</div>
+                      <div className="text-xl sm:text-2xl lg:text-3xl font-display font-black text-zinc-950">{st.value}</div>
+                      <div className="text-[9px] font-sans text-zinc-400 font-semibold uppercase tracking-wider leading-none">{st.label}</div>
                     </div>
                   ))}
                 </div>
 
-                <a href="#results" className="inline-flex items-center text-xs sm:text-sm font-sans font-semibold tracking-wide text-blue-600 hover:text-blue-700 pt-2">
+                <a href="#results" className="inline-flex items-center text-xs font-sans font-semibold tracking-wide text-blue-600 hover:text-blue-700 pt-1">
                   <span>Explore Solutions</span>
-                  <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
+                  <ArrowRight className="w-3 h-3 ml-1.5" />
                 </a>
               </div>
 
               <div className="lg:col-span-6">
-                <div className="relative aspect-[4/3] rounded-3xl overflow-hidden border border-zinc-200 bg-zinc-950 p-6 flex flex-col justify-between shadow-xl">
+                <div className="relative aspect-[16/9] rounded-2xl overflow-hidden border border-zinc-200 bg-zinc-950 p-4 flex flex-col justify-between shadow-xl">
                   <div className="absolute inset-0 bg-grid-pattern opacity-5" />
 
-                  <div className="flex items-center justify-between border-b border-zinc-900 pb-3 relative z-10">
+                  <div className="flex items-center border-b border-zinc-900 pb-2 relative z-10">
                     <span className="text-[10px] font-sans text-zinc-400 font-medium">Fixl AI &bull; {solutionsData[selectedSolution].visualLabel}</span>
-                    <span className="text-[9px] font-sans text-blue-400 font-semibold uppercase flex items-center">
-                      <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse mr-1" />
-                      Secure VPC Active
-                    </span>
                   </div>
 
-                  <div className="flex-grow flex flex-col justify-center relative z-10 py-4 h-full min-h-[180px]">
+                  <div className="flex-grow flex flex-col justify-center relative z-10 py-2 h-full min-h-[120px]">
                     {selectedSolution === 'voice' && (
                       <div className="relative w-full h-full min-h-[160px] rounded-2xl overflow-hidden flex flex-col justify-between">
                         <img
@@ -1004,10 +1000,6 @@ export default function LandingPage() {
                     )}
                   </div>
 
-                  <div className="border-t border-zinc-900 pt-2 flex items-center justify-between text-[10px] font-sans text-zinc-500">
-                    <span>Node: secure_edge_04</span>
-                    <span>System clock synced</span>
-                  </div>
                 </div>
               </div>
 

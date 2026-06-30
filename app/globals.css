@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+/* Normalize base font-size across dev (localhost) and production (Vercel).
+   Without this, production builds can render slightly larger due to
+   browser/OS font-metric differences. 15px = 93.75% of the 16px browser default. */
+html {
+  font-size: 15px;
+}
+
 @theme {
   --font-sans: var(--font-sans), system-ui, -apple-system, sans-serif;
   --font-display: var(--font-display), system-ui, -apple-system, sans-serif;

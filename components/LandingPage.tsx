@@ -1,9 +1,10 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect, useRef, createContext, useContext } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'motion/react';
 import type { MotionValue } from 'motion/react';
 import Lenis from 'lenis';
+import Link from 'next/link';
 import {
   Sparkles,
   Play,
@@ -166,7 +167,6 @@ export default function LandingPage() {
   const [selectedSolution, setSelectedSolution] = useState<string>('voice');
   const [activeIndustry, setActiveIndustry] = useState<string>('finance');
   const [hoveredBadge, setHoveredBadge] = useState<string | null>(null);
-  const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'annual'>('annual');
 
   // Hero simulator states
   const [heroPromptInput, setHeroPromptInput] = useState('Build a localized routing & synthetic safety firewall for customer queries');
@@ -181,7 +181,7 @@ export default function LandingPage() {
   // Cookie consent
   const [showCookies, setShowCookies] = useState(false);
   useEffect(() => {
-    if (!localStorage.getItem('fixiai-cookies')) setShowCookies(true);
+    if (typeof window !== 'undefined' && !localStorage.getItem('fixiai-cookies')) setShowCookies(true);
   }, []);
   const acceptCookies = (all: boolean) => {
     localStorage.setItem('fixiai-cookies', all ? 'all' : 'essential');
@@ -270,7 +270,7 @@ export default function LandingPage() {
   const executiveOverviewPoints = [
     {
       title: 'Unified AI Platforms',
-      text: 'Avoid scattered APIs. FixIAI builds unified systems that coordinate models, internal databases, and private servers under a single, secure control panel.'
+      text: 'Avoid scattered APIs. Fixl AI builds unified systems that coordinate models, internal databases, and private servers under a single, secure control panel.'
     },
     {
       title: 'Automated Task Workflows',
@@ -287,11 +287,11 @@ export default function LandingPage() {
     { id: 'eco-agent', icon: <Workflow className="w-5 h-5 text-purple-500" />, category: 'Workflows', title: 'Custom Automations', description: 'Multi-step automated workflows that execute tasks and connect systems under human oversight.', metric: '18x', metricLabel: 'Speed Increase' },
     { id: 'eco-rag', icon: <Database className="w-5 h-5 text-blue-500" />, category: 'Search', title: 'Internal Databases', description: 'Custom internal search databases connected directly to your existing documentation.', metric: '< 120ms', metricLabel: 'Search Latency' },
     { id: 'eco-auto', icon: <Layers3 className="w-5 h-5 text-indigo-500" />, category: 'Operations', title: 'Workflow Efficiency', description: 'Workflow automation for back-office tasks, document reviews, and internal tickets.', metric: '-82%', metricLabel: 'Cost Reduction' },
-    { id: 'eco-voice', icon: <Mic className="w-5 h-5 text-pink-500" />, category: 'Voice', title: 'Voice AI Integration', description: 'Voice integration with fast response times and clear natural language routing.', metric: '320ms', metricLabel: 'Response Delay' },
-    { id: 'eco-multi', icon: <Video className="w-5 h-5 text-amber-500" />, category: 'Files', title: 'Document Parsing', description: 'Extract data from complex PDF files, charts, legacy scanned documents, and forms.', metric: '99.2%', metricLabel: 'Extraction Rate' },
-    { id: 'eco-dev', icon: <Terminal className="w-5 h-5 text-cyan-500" />, category: 'Training', title: 'Custom Fine-Tuning', description: 'Model fine-tuning and hosting specialized on your private terminology.', metric: 'Bespoke', metricLabel: 'Term Customization' },
+    { id: 'eco-voice', icon: <Mic className="w-5 h-5 text-blue-500" />, category: 'Voice', title: 'Voice AI Integration', description: 'Voice integration with fast response times and clear natural language routing.', metric: '320ms', metricLabel: 'Response Delay' },
+    { id: 'eco-multi', icon: <Video className="w-5 h-5 text-violet-500" />, category: 'Files', title: 'Document Parsing', description: 'Extract data from complex PDF files, charts, legacy scanned documents, and forms.', metric: '99.2%', metricLabel: 'Extraction Rate' },
+    { id: 'eco-dev', icon: <Terminal className="w-5 h-5 text-indigo-500" />, category: 'Training', title: 'Custom Fine-Tuning', description: 'Model fine-tuning and hosting specialized on your private terminology.', metric: 'Bespoke', metricLabel: 'Term Customization' },
     { id: 'eco-consult', icon: <Briefcase className="w-5 h-5 text-blue-500" />, category: 'Architecture', title: 'Engineering Plans', description: 'System architecture reviews, feasibility studies, and functional software prototyping.', metric: 'SOC-2', metricLabel: 'Ready Design' },
-    { id: 'eco-mlops', icon: <Server className="w-5 h-5 text-orange-500" />, category: 'Ops', title: 'Model Monitoring', description: 'Automatic model version tracking, health monitoring, and system uptime scaling.', metric: '99.99%', metricLabel: 'Uptime SLA' },
+    { id: 'eco-mlops', icon: <Server className="w-5 h-5 text-blue-500" />, category: 'Ops', title: 'Model Monitoring', description: 'Automatic model version tracking, health monitoring, and system uptime scaling.', metric: '99.99%', metricLabel: 'Uptime SLA' },
     { id: 'eco-sec', icon: <Shield className="w-5 h-5 text-red-500" />, category: 'Privacy', title: 'Data Security', description: 'Direct guardrails, secure networks, and strict data privacy compliance checks.', metric: 'Active', metricLabel: 'Security Shield' }
   ];
 
@@ -360,32 +360,28 @@ export default function LandingPage() {
               <Sparkles className="w-4.5 h-4.5 text-white" />
             </div>
             <span className="font-display text-xl font-semibold tracking-tight text-white">
-              FixI<span className="text-blue-500 font-light">AI</span>
+              Fixl <span className="text-blue-500 font-light">AI</span>
             </span>
           </a>
 
           <div className="hidden lg:flex items-center space-x-8">
-            {['The Shift', 'Ecosystem', 'Capabilities', 'Solutions', 'Enterprise Trust', 'Pricing & Why Us'].map((label, idx) => {
-              const ids = ['shift', 'ecosystem', 'core', 'solutions', 'enterprise', 'pricing'];
-              return (
-                <a
-                  key={idx}
-                  href={`#${ids[idx]}`}
-                  className={`relative text-[13px] font-sans font-medium tracking-tight transition-colors group ${activeNav === ids[idx] ? 'text-blue-400 font-semibold' : 'text-zinc-400 hover:text-zinc-200'}`}
-                >
-                  {label}
-                  <span className={`absolute -bottom-0.5 left-0 h-[1.5px] bg-blue-400 rounded-full transition-all duration-300 ${activeNav === ids[idx] ? 'w-full' : 'w-0 group-hover:w-full'}`} />
-                </a>
-              );
-            })}
+            {[
+              { label: 'Services', href: '/services' },
+              { label: 'Industries', href: '/industries' },
+              { label: 'Enterprise', href: '/enterprise' },
+            ].map((l) => (
+              <Link key={l.href} href={l.href}
+                className="relative text-[13px] font-sans font-medium tracking-tight text-zinc-400 hover:text-zinc-200 transition-colors group">
+                {l.label}
+                <span className="absolute -bottom-0.5 left-0 h-[1.5px] bg-blue-400 rounded-full w-0 group-hover:w-full transition-all duration-300" />
+              </Link>
+            ))}
           </div>
 
-          <div>
-            <a href="#results" className="group px-5 py-2.5 rounded-full text-[13px] font-sans font-medium bg-white text-zinc-950 hover:bg-blue-50 hover:shadow-[0_0_22px_rgba(255,255,255,0.22)] hover:scale-105 transition-all duration-200 shadow-md flex items-center gap-1.5">
-              Book Demo
-              <ArrowRight className="w-3.5 h-3.5 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200" />
-            </a>
-          </div>
+          <Link href="/enterprise#contact" className="group px-5 py-2.5 rounded-full text-[13px] font-sans font-medium bg-white text-zinc-950 hover:bg-blue-50 hover:shadow-[0_0_22px_rgba(255,255,255,0.22)] hover:scale-105 transition-all duration-200 shadow-md flex items-center gap-1.5">
+            Book Demo
+            <ArrowRight className="w-3.5 h-3.5 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200" />
+          </Link>
         </div>
       </nav>
 
@@ -421,7 +417,7 @@ export default function LandingPage() {
             </h1>
 
             <p className="text-sm text-zinc-400 font-light leading-relaxed max-w-xl">
-              FixIAI engineers and integrates bespoke, air-gapped cognitive frameworks natively into your core infrastructure.
+              Fixl AI engineers and integrates bespoke, air-gapped cognitive frameworks natively into your core infrastructure.
               Unleash autonomous agentic orchestration, sub-second semantic retrieval, and bulletproof security firewalls.
             </p>
 
@@ -451,8 +447,8 @@ export default function LandingPage() {
             <div className="relative p-6 rounded-[2rem] bg-[#0c0c0e]/95 border border-zinc-800/80 shadow-2xl space-y-4">
               <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
                 <div className="flex items-center space-x-2">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                  <span className="text-[10px] font-sans font-medium text-zinc-400">FixIAI Sentry Control</span>
+                  <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+                  <span className="text-[10px] font-sans font-medium text-zinc-400">Fixl AI Sentry Control</span>
                 </div>
                 <div className="px-2 py-0.5 rounded bg-zinc-900 border border-zinc-850 text-[10px] font-sans text-blue-400 font-semibold">Live Shell</div>
               </div>
@@ -536,7 +532,7 @@ export default function LandingPage() {
                       </div>
 
                       <p className="text-[11px] text-zinc-400 font-light leading-relaxed pl-9">
-                        FixIAI uses cookies and similar technologies to keep the platform secure and to improve your experience.
+                        Fixl AI uses cookies and similar technologies to keep the platform secure and to improve your experience.
                         Essential cookies are required for core functionality. Analytics cookies help us understand how the site is used.
                         Personalisation cookies remember your settings across sessions. No data is ever shared with third parties without
                         explicit consent.{' '}
@@ -547,19 +543,19 @@ export default function LandingPage() {
 
                       <div className="flex flex-wrap gap-4 text-[10px] text-zinc-500 pl-9 font-sans">
                         <span className="flex items-center gap-1.5">
-                          <CheckCircle2 className="w-3 h-3 text-emerald-500 flex-shrink-0" />
+                          <CheckCircle2 className="w-3 h-3 text-blue-500 flex-shrink-0" />
                           Essential (always active)
                         </span>
                         <span className="flex items-center gap-1.5">
-                          <CheckCircle2 className="w-3 h-3 text-zinc-700 flex-shrink-0" />
+                          <CheckCircle2 className="w-3 h-3 text-zinc-500 flex-shrink-0" />
                           Analytics & Performance
                         </span>
                         <span className="flex items-center gap-1.5">
-                          <CheckCircle2 className="w-3 h-3 text-zinc-700 flex-shrink-0" />
+                          <CheckCircle2 className="w-3 h-3 text-zinc-500 flex-shrink-0" />
                           Personalisation
                         </span>
                         <span className="flex items-center gap-1.5">
-                          <CheckCircle2 className="w-3 h-3 text-zinc-700 flex-shrink-0" />
+                          <CheckCircle2 className="w-3 h-3 text-zinc-500 flex-shrink-0" />
                           Marketing & Retargeting
                         </span>
                       </div>
@@ -604,7 +600,7 @@ export default function LandingPage() {
                   <div className="aspect-[4/3] rounded-2xl bg-zinc-950 relative flex items-center justify-center overflow-hidden">
                     <img
                       src="/laptop_showcase.jpg"
-                      alt="FixIAI Laptop Workspace Showcase"
+                      alt="Fixl AI Laptop Workspace Showcase"
                       className="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-500"
                       referrerPolicy="no-referrer"
                     />
@@ -612,7 +608,7 @@ export default function LandingPage() {
                     <div className="relative w-14 h-14 rounded-full bg-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-all cursor-pointer">
                       <Play className="w-4 h-4 text-zinc-950 fill-current ml-1" />
                     </div>
-                    <div className="absolute bottom-4 left-4 text-xs font-sans text-zinc-300">Hi, we are FixIAI</div>
+                    <div className="absolute bottom-4 left-4 text-xs font-sans text-zinc-300">Hi, we are Fixl AI</div>
                   </div>
                   <div className="flex items-center justify-between mt-4 px-2">
                     <span className="font-sans font-bold text-sm text-zinc-900">Product Overview</span>
@@ -709,7 +705,7 @@ export default function LandingPage() {
       </SectionReveal>
 
       {/* ═══════════════════════════════════════════════════════════════════════
-          SECTION 3 — THE FIXIAI ECOSYSTEM
+          SECTION 3 — THE Fixl AI ECOSYSTEM
           ═══════════════════════════════════════════════════════════════════════ */}
       <SectionReveal id="ecosystem" className="relative py-10 lg:py-14 bg-[#f4f4f6] text-zinc-950 border-b border-zinc-200">
         <div className="max-w-[1440px] mx-auto px-8 sm:px-12 space-y-8">
@@ -825,7 +821,7 @@ export default function LandingPage() {
               <div className="absolute inset-0 bg-grid-pattern opacity-5 pointer-events-none" />
 
               <div className="flex items-center justify-between border-b border-zinc-900 pb-3 relative z-10">
-                <span className="text-[10px] font-sans text-zinc-400 font-medium">FixIAI Engine Visualizer</span>
+                <span className="text-[10px] font-sans text-zinc-400 font-medium">Fixl AI Engine Visualizer</span>
                 <span className="text-[10px] font-sans text-zinc-500">System Coherence: 99.8%</span>
               </div>
 
@@ -883,7 +879,7 @@ export default function LandingPage() {
                 {activeCoreTab === 'rag' && (
                   <div className="space-y-4">
                     <div>
-                      <span className="text-[10px] font-sans text-emerald-400 font-medium">Sub-second Vector Knowledge</span>
+                      <span className="text-[10px] font-sans text-blue-400 font-medium">Sub-second Vector Knowledge</span>
                       <h3 className="text-base font-display font-bold text-white mt-1">Enterprise Hybrid Document Sync</h3>
                       <p className="text-xs text-zinc-400 mt-2 font-light leading-relaxed">
                         Connect unstructured raw enterprise document files directly into models safely. Our hybrid indexing systems perform instant metadata pre-filtering, dense vector mapping, and contextual ranking with clear citations.
@@ -911,7 +907,7 @@ export default function LandingPage() {
                       <span className="text-[10px] font-sans text-indigo-400 font-medium">Transactional Back Office Loop</span>
                       <h3 className="text-base font-display font-bold text-white mt-1">Sovereign Automation Pipelines</h3>
                       <p className="text-xs text-zinc-400 mt-2 font-light leading-relaxed">
-                        Bypass slow manual review bottlenecks. FixIAI automates continuous, complex transactional work lines — classifying incoming emails, checking ledger values, processing PDFs, and coordinating DevOps.
+                        Bypass slow manual review bottlenecks. Fixl AI automates continuous, complex transactional work lines — classifying incoming emails, checking ledger values, processing PDFs, and coordinating DevOps.
                       </p>
                     </div>
                     <div className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-900 space-y-1 text-xs font-sans text-zinc-400">
@@ -1020,7 +1016,7 @@ export default function LandingPage() {
                   <div className="absolute inset-0 bg-grid-pattern opacity-5" />
 
                   <div className="flex items-center justify-between border-b border-zinc-900 pb-3 relative z-10">
-                    <span className="text-[10px] font-sans text-zinc-400 font-medium">FixIAI &bull; {solutionsData[selectedSolution].visualLabel}</span>
+                    <span className="text-[10px] font-sans text-zinc-400 font-medium">Fixl AI &bull; {solutionsData[selectedSolution].visualLabel}</span>
                     <span className="text-[9px] font-sans text-blue-400 font-semibold uppercase flex items-center">
                       <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse mr-1" />
                       Secure VPC Active
@@ -1148,7 +1144,7 @@ export default function LandingPage() {
                       SECTORS &amp; SECURITY
                     </div>
                     <p className="text-xs text-zinc-400 font-light leading-relaxed">
-                      FixIAI designs compliance-ready AI systems for regulated industries — secured with active guardrails, adversarial red-teaming, and certified infrastructure standards.
+                      Fixl AI designs compliance-ready AI systems for regulated industries — secured with active guardrails, adversarial red-teaming, and certified infrastructure standards.
                     </p>
                   </div>
                 </div>
@@ -1215,148 +1211,6 @@ export default function LandingPage() {
       {/* ═══════════════════════════════════════════════════════════════════════
           SECTION 7 — PRICING
           ═══════════════════════════════════════════════════════════════════════ */}
-      <SectionReveal id="pricing" className="relative py-10 lg:py-14 bg-[#f4f4f6] text-zinc-950 border-b border-zinc-200">
-        <div className="max-w-[1440px] mx-auto px-8 sm:px-12 space-y-8">
-
-          <div className="text-center max-w-2xl mx-auto space-y-4">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-semibold text-zinc-950 tracking-tight">
-              <WordReveal text="Transparent Pricing. ROI Guaranteed." />
-            </h2>
-            <p className="text-sm sm:text-base text-zinc-600 leading-relaxed font-light">
-              We align our monetization model on continuous model performance and actual, quantifiable business throughput. Choose the plan right for your scale.
-            </p>
-
-            <div className="inline-flex items-center bg-white border border-zinc-300 rounded-full p-1 mt-2">
-              <button
-                onClick={() => setBillingPeriod('monthly')}
-                className={`px-4 py-1.5 rounded-full text-[10px] font-sans font-bold tracking-widest transition-all uppercase ${billingPeriod === 'monthly' ? 'bg-zinc-950 text-white shadow-xs' : 'text-zinc-500 hover:text-zinc-700'}`}
-              >
-                Monthly
-              </button>
-              <button
-                onClick={() => setBillingPeriod('annual')}
-                className={`px-4 py-1.5 rounded-full text-[10px] font-sans font-bold tracking-widest transition-all uppercase ${billingPeriod === 'annual' ? 'bg-zinc-950 text-white shadow-xs' : 'text-zinc-500 hover:text-zinc-700'}`}
-              >
-                Annual (-20%)
-              </button>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-stretch">
-            {[
-              { name: 'Starter', desc: 'Perfect for simple pilot studies and standalone model deployments.', monthlyPrice: 1200, annualPrice: 960, features: ['1 Model Integration API', 'Standard document search index', 'Basic support channel access', 'SOC-2 Compliance', 'Zero telemetry data leak'] },
-              { name: 'Growth', desc: 'Tailored for expanding teams deploying automated workflows.', monthlyPrice: 3800, annualPrice: 3040, features: ['3 Secure Model Endpoints', 'Complex document database sync', '2 Active custom automations', 'API integration to Salesforce/SAP', 'Standard security checks'] },
-              { name: 'Scale', desc: 'Designed for fully active production-grade enterprise systems.', monthlyPrice: 8500, annualPrice: 6800, popular: true, features: ['Unlimited Model Endpoints', 'Sub-second voice response latency', 'High-performance document search', 'Unlimited custom automations', 'Managed model updates', '1-on-1 Dedicated Architect'] },
-              { name: 'Enterprise', desc: 'Bespoke fine-tuned architectures running on secure cloud clusters.', monthlyPrice: 'Custom', annualPrice: 'Custom', features: ['Proprietary model fine-tuning', 'On-premise hardware setups', 'Automated data masking', 'SLA guaranteed system uptime', 'Security compliance controls', '100% custom code handover'] }
-            ].map((plan) => (
-              <div
-                key={plan.name}
-                style={diagonalClipStyle}
-                className={`p-7 flex flex-col justify-between text-left relative overflow-hidden transition-all duration-300 ${
-                  (plan as any).popular
-                    ? 'bg-zinc-950 text-white border-2 border-blue-500 shadow-[0_0_40px_rgba(59,130,246,0.18)] hover:shadow-[0_0_60px_rgba(59,130,246,0.32)] hover:-translate-y-1 transition-all duration-300'
-                    : 'bg-white text-zinc-900 border border-zinc-200 hover:border-zinc-300 hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300'
-                }`}
-              >
-                {(plan as any).popular && (
-                  <div className="absolute top-4 right-4 bg-blue-600 text-white font-sans text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded-full">
-                    POPULAR
-                  </div>
-                )}
-
-                <div className="space-y-6">
-                  <div>
-                    <h3 className="text-base sm:text-lg font-sans font-bold uppercase tracking-wide">{plan.name}</h3>
-                    <p className={`text-xs sm:text-sm mt-2 font-light leading-relaxed ${(plan as any).popular ? 'text-zinc-400' : 'text-zinc-500'}`}>
-                      {plan.desc}
-                    </p>
-                  </div>
-
-                  <div className="border-t border-zinc-200/50 pt-4">
-                    <span className="text-[10px] font-sans uppercase tracking-wider text-zinc-400 font-medium">Target Cost</span>
-                    <div className="flex items-baseline mt-1 space-x-1">
-                      <span className="text-2xl sm:text-3xl lg:text-4xl font-display font-black tracking-tight">
-                        {typeof plan.monthlyPrice === 'number'
-                          ? `$${(billingPeriod === 'annual' ? plan.annualPrice as number : plan.monthlyPrice).toLocaleString()}`
-                          : plan.monthlyPrice}
-                      </span>
-                      {typeof plan.monthlyPrice === 'number' && (
-                        <span className="text-[11px] text-zinc-400 font-sans font-medium">/mo</span>
-                      )}
-                    </div>
-                  </div>
-
-                  <ul className="space-y-3 border-t border-zinc-200/50 pt-4">
-                    {plan.features.map((feat, idx) => (
-                      <li key={idx} className="flex items-start space-x-2 text-xs leading-normal font-light">
-                        <CheckCircle2 className={`w-3.5 h-3.5 flex-shrink-0 mt-0.5 ${(plan as any).popular ? 'text-blue-400' : 'text-zinc-500'}`} />
-                        <span className={(plan as any).popular ? 'text-zinc-300' : 'text-zinc-700'}>{feat}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div className="pt-6">
-                  <a
-                    href="#results"
-                    className={`group w-full py-3 rounded-xl font-sans text-xs font-semibold tracking-wider uppercase flex items-center justify-center gap-2 transition-all duration-200 ${
-                      (plan as any).popular
-                        ? 'bg-blue-600 hover:bg-blue-500 hover:shadow-[0_0_20px_rgba(59,130,246,0.4)] text-white'
-                        : 'bg-zinc-950 hover:bg-zinc-800 hover:shadow-[0_0_16px_rgba(0,0,0,0.3)] text-white'
-                    }`}
-                  >
-                    Get started
-                    <ArrowRight className="w-3 h-3 -translate-x-1 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-200" />
-                  </a>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="p-5 rounded-3xl bg-zinc-950 text-white flex flex-col sm:flex-row items-center justify-between gap-4 text-left shadow-xl relative overflow-hidden">
-            <div className="absolute inset-0 bg-grid-pattern opacity-5" />
-            <div className="relative z-10 flex items-center space-x-3">
-              <div className="p-2 bg-blue-600/20 border border-blue-500/30 rounded-xl text-blue-400">
-                <Star className="w-4.5 h-4.5 fill-current text-blue-400" />
-              </div>
-              <div>
-                <h4 className="text-sm font-sans font-bold uppercase tracking-wide text-white">ROI-first Managed Guarantee</h4>
-                <p className="text-xs text-zinc-400 mt-0.5 font-light">All system pricing metrics include structured performance-based engagement benchmarks.</p>
-              </div>
-            </div>
-            <a href="#results" className="relative z-10 text-xs font-sans uppercase tracking-widest font-bold text-blue-400 hover:text-blue-300 transition-colors">
-              Read Governance Charter &rarr;
-            </a>
-          </div>
-
-          <div className="pt-8 border-t border-zinc-200 text-left space-y-6">
-            <h3 className="text-2xl sm:text-3xl font-display font-semibold text-zinc-950 tracking-tight text-center">
-              How Businesses Win with FixIAI.
-            </h3>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {[
-                { title: '18x Faster Delivery', desc: 'Skip tedious months of backend stack debugging. We deploy functional private enterprise setups within 3 weeks.' },
-                { title: 'ROI-First Strategy', desc: 'Every engineering plan focuses purely on concrete throughput gains, support desk overhead reduction, and server cost drops.' },
-                { title: 'Complete Model Agnosticism', desc: 'Avoid proprietary single-vendor lock-in. Move model payloads between GPT, Llama, Claude, or DeepSeek without rewriting core code.' },
-                { title: 'Production air-gapped ready', desc: 'Host systems in isolated VPC, private Docker hubs, or secure edge networks. Zero telemetry leakage guaranteed.' }
-              ].map((card, idx) => (
-                <div key={idx} className="group/win p-6 bg-white border border-zinc-200 rounded-3xl flex flex-col justify-between hover:border-zinc-300 hover:shadow-[0_4px_24px_rgba(0,0,0,0.07)] hover:-translate-y-0.5 transition-all duration-200">
-                  <div className="space-y-3">
-                    <div className="w-7 h-7 rounded-lg bg-zinc-50 border border-zinc-150 flex items-center justify-center transition-all duration-300 group-hover/win:bg-zinc-950 group-hover/win:border-zinc-950 group-hover/win:shadow-[0_0_12px_rgba(0,0,0,0.15)]">
-                      <Sparkles className="w-4 h-4 text-zinc-600 transition-all duration-300 group-hover/win:text-white group-hover/win:rotate-12" />
-                    </div>
-                    <h4 className="text-sm font-sans font-bold uppercase tracking-wide text-zinc-950">{card.title}</h4>
-                    <p className="text-xs text-zinc-500 leading-relaxed font-light">{card.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-        </div>
-      </SectionReveal>
-
       {/* ═══════════════════════════════════════════════════════════════════════
           SECTION 8 — RESULTS & CTA
           ═══════════════════════════════════════════════════════════════════════ */}
@@ -1389,7 +1243,7 @@ export default function LandingPage() {
 
             <div className="max-w-2xl mx-auto space-y-3 relative z-10">
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-semibold text-white tracking-tight leading-tight">
-                <WordReveal text="Secure, custom AI systems. Deploy FixIAI today." />
+                <WordReveal text="Secure, custom AI systems. Deploy Fixl AI today." />
               </h2>
               <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed font-light max-w-lg mx-auto">
                 Contact us to discuss your requirements and design a custom plan for your infrastructure. Deploy in weeks.
@@ -1447,13 +1301,13 @@ export default function LandingPage() {
                 <div className="w-6 h-6 rounded bg-zinc-900 border border-zinc-800 flex items-center justify-center">
                   <Sparkles className="w-3.5 h-3.5 text-white" />
                 </div>
-                <span className="font-display font-semibold text-white text-sm tracking-tight">FixIAI</span>
+                <span className="font-display font-semibold text-white text-sm tracking-tight">Fixl AI</span>
               </div>
               <p className="text-zinc-500 leading-relaxed font-light text-[11px]">
                 Custom AI systems and database integrations. We build secure model pipelines, custom text search engines, and automated workflows.
               </p>
               <div className="text-zinc-650 font-sans text-[10px] uppercase tracking-wider">
-                &copy; {new Date().getFullYear()} FixIAI. All rights reserved.
+                &copy; {new Date().getFullYear()} Fixl AI. All rights reserved.
               </div>
             </div>
 

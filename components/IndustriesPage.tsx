@@ -239,8 +239,8 @@ export default function IndustriesPage() {
   const [litIndustry, setLitIndustry] = useState<number | null>(null);
   const [dotPosition, setDotPosition] = useState<{ x: number; y: number } | null>(null);
   const [showCookies, setShowCookies] = useState(false);
-  useEffect(() => { if (typeof window !== 'undefined' && !localStorage.getItem('fixiai-cookies')) setShowCookies(true); }, []);
-  const acceptCookies = (all: boolean) => { localStorage.setItem('fixiai-cookies', all ? 'all' : 'essential'); setShowCookies(false); };
+  useEffect(() => { if (typeof window !== 'undefined' && !sessionStorage.getItem('fixiai-cookies')) setShowCookies(true); }, []);
+  const acceptCookies = (all: boolean) => { sessionStorage.setItem('fixiai-cookies', all ? 'all' : 'essential'); setShowCookies(false); };
   const industry = industries[activeIndustry];
 
   useEffect(() => {

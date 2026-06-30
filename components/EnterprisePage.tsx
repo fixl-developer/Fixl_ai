@@ -195,8 +195,8 @@ export default function EnterprisePage() {
   const [formSent, setFormSent] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '', company: '', role: '', message: '' });
   const [showCookies, setShowCookies] = useState(false);
-  useEffect(() => { if (typeof window !== 'undefined' && !localStorage.getItem('fixiai-cookies')) setShowCookies(true); }, []);
-  const acceptCookies = (all: boolean) => { localStorage.setItem('fixiai-cookies', all ? 'all' : 'essential'); setShowCookies(false); };
+  useEffect(() => { if (typeof window !== 'undefined' && !sessionStorage.getItem('fixiai-cookies')) setShowCookies(true); }, []);
+  const acceptCookies = (all: boolean) => { sessionStorage.setItem('fixiai-cookies', all ? 'all' : 'essential'); setShowCookies(false); };
 
   useEffect(() => {
     const lenis = new Lenis({

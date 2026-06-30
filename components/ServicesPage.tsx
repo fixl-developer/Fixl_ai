@@ -110,8 +110,8 @@ const FlowDiagram = ({ steps, dark = false }: {
 export default function ServicesPage() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [showCookies, setShowCookies] = useState(false);
-  useEffect(() => { if (typeof window !== 'undefined' && !localStorage.getItem('fixiai-cookies')) setShowCookies(true); }, []);
-  const acceptCookies = (all: boolean) => { localStorage.setItem('fixiai-cookies', all ? 'all' : 'essential'); setShowCookies(false); };
+  useEffect(() => { if (typeof window !== 'undefined' && !sessionStorage.getItem('fixiai-cookies')) setShowCookies(true); }, []);
+  const acceptCookies = (all: boolean) => { sessionStorage.setItem('fixiai-cookies', all ? 'all' : 'essential'); setShowCookies(false); };
 
   useEffect(() => {
     const lenis = new Lenis({
@@ -195,8 +195,8 @@ export default function ServicesPage() {
           <a href="#services-cta" className="px-6 py-3 rounded-full font-sans text-sm font-semibold bg-white text-zinc-950 hover:bg-zinc-100 hover:shadow-[0_8px_32px_rgba(255,255,255,0.2)] hover:scale-[1.04] transition-all duration-200 shadow-lg flex items-center gap-2">
             Book a Demo <ArrowRight className="w-4 h-4" />
           </a>
-          <Link href="/enterprise" className="text-sm font-sans font-medium text-zinc-400 hover:text-white transition-colors duration-200">
-            Enterprise →
+          <Link href="/enterprise" className="px-6 py-3 rounded-full font-sans text-sm font-semibold bg-white text-zinc-950 hover:bg-zinc-100 hover:shadow-[0_8px_32px_rgba(255,255,255,0.2)] hover:scale-[1.04] transition-all duration-200 shadow-lg flex items-center gap-2">
+            Enterprise <ArrowRight className="w-4 h-4" />
           </Link>
         </motion.div>
 

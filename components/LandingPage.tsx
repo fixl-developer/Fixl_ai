@@ -181,10 +181,10 @@ export default function LandingPage() {
   // Cookie consent
   const [showCookies, setShowCookies] = useState(false);
   useEffect(() => {
-    if (typeof window !== 'undefined' && !localStorage.getItem('fixiai-cookies')) setShowCookies(true);
+    if (typeof window !== 'undefined' && !sessionStorage.getItem('fixiai-cookies')) setShowCookies(true);
   }, []);
   const acceptCookies = (all: boolean) => {
-    localStorage.setItem('fixiai-cookies', all ? 'all' : 'essential');
+    sessionStorage.setItem('fixiai-cookies', all ? 'all' : 'essential');
     setShowCookies(false);
   };
 

@@ -2,42 +2,90 @@
 
 /* Normalize base font-size across dev (localhost) and production (Vercel).
    Without this, production builds can render slightly larger due to
-   browser/OS font-metric differences. 15px = 93.75% of the 16px browser default. */
+   browser/OS font-metric differences. Base is 15px; scaled to 75% of that
+   (11.25px) so the whole rem-based layout renders at the requested denser
+   density WITHOUT using the CSS `zoom` property — `zoom` desyncs
+   getBoundingClientRect()/scroll measurements from real scroll position,
+   which broke every scroll-linked reveal animation on this page. Scaling
+   the root font-size instead changes real layout pixels, so scroll math
+   stays accurate. */
 html {
-  font-size: 15px;
+  font-size: 11.25px;
 }
 
 @theme {
   --font-sans: var(--font-sans), system-ui, -apple-system, sans-serif;
   --font-display: var(--font-display), system-ui, -apple-system, sans-serif;
+  --font-accent: var(--font-accent), Georgia, serif;
   --font-mono: var(--font-mono), monospace;
+
+  /* ── FixlAI palette — vivid, saturated "all pop" colors. Nothing muted. */
+  --color-ink: #17130f;
+  --color-ink-dim: #241d18;
+  --color-ink-soft: #423b30;
+
+  --color-cream: #faf5ec;
+  --color-paper: #f1e8db;
+  --color-paper-dim: #e6dac5;
+  --color-blush: #f6e7e4;
+  --color-mist: #e9eee7;
+
+  /* Aurora dark base — used for the hero + footer bookends */
+  --color-void: #1a0a1f;
+  --color-void-dim: #12071a;
+  --color-wine: #3a0b28;
+  --color-wine-dim: #280719;
+
+  --color-maroon: #ff5240;
+  --color-maroon-deep: #c22a1c;
+
+  --color-amber: #ffa62b;
+  --color-amber-deep: #ea7d0a;
+
+  --color-rose: #ff4fc3;
+  --color-rose-deep: #d61f97;
+
+  --color-violet: #9b5cff;
+  --color-violet-deep: #6c26e8;
+
+  --color-mint: #17e6c8;
+  --color-mint-deep: #0aa88f;
+
+  --color-olive: #d6f24a;
+  --color-olive-deep: #9bc311;
+
+  --color-steel: #3fa1ff;
+  --color-steel-deep: #1a6bea;
 }
 
 @layer utilities {
-  .text-glow {
-    text-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
-  }
   .bg-grid-pattern {
     background-size: 40px 40px;
-    background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-                      linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                      linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
   }
-  .glow-blue {
-    box-shadow: 0 0 40px -5px rgba(59, 130, 246, 0.25);
+  .bg-grid-ink {
+    background-size: 40px 40px;
+    background-image: linear-gradient(to right, rgba(23, 19, 15, 0.05) 1px, transparent 1px),
+                      linear-gradient(to bottom, rgba(23, 19, 15, 0.05) 1px, transparent 1px);
+  }
+  .bg-stars {
+    background-size: 64px 64px;
+    background-image: radial-gradient(rgba(250, 245, 236, 0.6) 1px, transparent 1px);
   }
 }
 
-/* Custom Scrollbar for premium dark theme feel */
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #09090b;
+  background: #17130f;
 }
 ::-webkit-scrollbar-thumb {
-  background: #27272a;
+  background: #4a4438;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #3f3f46;
+  background: #6b6459;
 }
